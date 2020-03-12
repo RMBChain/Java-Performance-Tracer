@@ -1,0 +1,57 @@
+version: '3.1'
+
+services:
+
+  jds-dev-mongo:
+    image: mongo:4.2.3
+    restart: always
+    container_name: jds-dev-mongo
+    ports:
+      - 27017:27017
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: root
+      MONGO_INITDB_ROOT_PASSWORD: example
+
+  jds-dev-mongo-express:
+    image: mongo-express:0.54.0
+    restart: always
+    container_name: jds-dev-mongo-express
+    links:
+      - jds-dev-mongo
+    depends_on:
+      - jds-dev-mongo
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+      ME_CONFIG_MONGODB_SERVER: jds-dev-mongo
+
+  jds-dev-redis:
+    image: redis:6.0-rc1
+    restart: always
+    container_name: jds-dev-redis
+    ports:
+      - 6379:6379
+    environment:
+      ME_CONFIG_MONGODB_ADMINUSERNAME: root
+      ME_CONFIG_MONGODB_ADMINPASSWORD: example
+
+  jds-dev-redis-phpredisadmin:
+    image: erikdubbelboer/phpredisadmin:v1.13.1
+    restart: always
+    container_name: jds-dev-redis-phpredisadmin
+    links:
+      - jds-dev-redis
+    depends_on:
+      - jds-dev-redis
+    ports:
+      - 7780:80
+    environment:
+      REDIS_1_HOST: jds-dev-redis
+
+  jds-dev-rabbit:
+    image: rabbitmq:3.7-management
+    ports:
+      - 5672:5672 # rabbit mq service
+      - 15672:15672 # management page

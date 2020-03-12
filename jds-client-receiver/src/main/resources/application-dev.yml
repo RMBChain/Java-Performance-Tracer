@@ -1,0 +1,24 @@
+spring:
+  data:
+    mongodb:
+      host: ${jds_mongodb_host:127.0.0.1}
+      port: ${jds_mongodb_port:27017} 
+      database: admin
+      username: root
+      password: example
+
+  rabbitmq:
+    host: ${jds_rabbitmq_host:127.0.0.1}
+    port: ${jds_rabbitmq_port:5672} 
+    username: guest
+    password: guest
+
+logging:
+  level:
+    root: INFO
+    org.springframework.web: trace
+    org.springframework.data.mongodb.core: INFO
+
+NIOServer:
+  port: 8091
+  cacheSize: 1024    
