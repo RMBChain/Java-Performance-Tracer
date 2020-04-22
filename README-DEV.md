@@ -2,6 +2,10 @@
 ***
 # Java Dynamic Snapshot - Development
 
+![avatar](JDS-DataFlow.png)
+
+
+
 ---
 
 Next Steps:
@@ -246,6 +250,8 @@ mongo://admin:123456@192.168.1.104:27017
    
 >`2. tag数值不能选取诸如UUID作为特征值,易导致时间序列过多,导致InfluxDB崩溃`
 
+>`3. 适合同一时间只有一组数据，但本系统同一时间会有多组数据`
+
 ---
 
 ##用到的Docker
@@ -253,9 +259,6 @@ mongo://admin:123456@192.168.1.104:27017
 Nexus( admin/admin123 )
 
 >docker run -d -p 7081:8081 --name nexus sonatype/nexus3
-
-
-
 
 
 ---
@@ -279,6 +282,3 @@ com.spotify: java code to image
 >https://github.com/forezp/SpringCloudLearning
 
 >
-
-   
-
