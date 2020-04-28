@@ -62,15 +62,15 @@ public class NIOServer {
 			while (it.hasNext()) {
 				SelectionKey selectionKey = it.next();
 				// 判断是哪个事件
-				if ( selectionKey.isConnectable()) {
+				if (selectionKey.isConnectable()) {
 					log.trace("socketChannelId : " + selectionKey.attachment());
 				}
-				if ( selectionKey.isAcceptable()) {// 客户请求连接
+				if (selectionKey.isAcceptable()) {// 客户请求连接
 					handleAccept(selectionKey);
 				}
-				if ( selectionKey.isReadable()) {// 读数据
+				if (selectionKey.isReadable()) {// 读数据
 					handleRead(selectionKey);
-				}				
+				}
 				it.remove();
 			}
 		}
@@ -104,12 +104,13 @@ public class NIOServer {
 				String data = new String(Arrays.copyOf(byteBuffer.array(), read));
 				dbTransfer.transfer(data);
 				socketChannel.write(ByteBuffer.wrap(Utils.Int2Bytes(read)));
-			} else if (read == -1) {
+			} else if (read == -1) {//the connection is unavaliabled
 				shouldCloseSocketChannel = true;
-				log.debug("Connection unavaliabled socketChannelId : " + selectionKey.attachment() + ", read count : " + read);
+				log.debug("Connection unavaliabled socketChannelId : " + selectionKey.attachment() + ", read count : "
+						+ read);
 			} else if (read == 0) {
 				shouldContinue = false;
-			}else {
+			} else {
 				shouldContinue = false;
 			}
 
@@ -138,6 +139,7 @@ public class NIOServer {
 		socketChannel.configureBlocking(false);
 		SelectionKey key = socketChannel.register(selectionKey.selector(), SelectionKey.OP_READ);
 		key.attach(socketChannelId++);
-		log.info("socketChannelId : " + selectionKey.attachment() + " accepted. Remote: " 	+ socketChannel.getRemoteAddress());
+		log.info("socketChannelId : " + selectionKey.attachment() + " accepted. Remote: "
+				+ socketChannel.getRemoteAddress());
 	}
 }
