@@ -50,7 +50,7 @@ public class LogUtil {
 				Formatter logFormater = new Formatter() {
 					@Override
 					public synchronized String format(LogRecord record) {
-						return record.getMessage() + "\n";
+						return "\n" + record.getMessage();
 					}
 				};
 
