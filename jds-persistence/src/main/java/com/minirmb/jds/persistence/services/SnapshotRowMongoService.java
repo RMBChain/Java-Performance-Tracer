@@ -13,7 +13,6 @@ import org.springframework.data.mongodb.core.aggregation.MatchOperation;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.stereotype.Service;
 
-import com.google.common.collect.Lists;
 import com.minirmb.jds.persistence.entity.MethodStatistics;
 import com.minirmb.jds.persistence.entity.SnapshotRow;
 import com.minirmb.jds.persistence.repositorys.SnapshotRowMongoRepository;

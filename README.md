@@ -23,7 +23,7 @@
 
 >`6. run docker-compose -f stack-jds.yml up`
 
->`7. browse [http://localhost:28080](http://localhost:28080) to see main page.`
+>`7. browse [http://localhost:18080](http://localhost:18080) to see main page.`
 
 ---
 

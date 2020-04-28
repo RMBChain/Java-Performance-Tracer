@@ -17,9 +17,9 @@
 	<modules>
 		<module>jds-common</module>
 		<module>jds-persistence</module>
-		<module>jds-client</module>
-		<module>jds-client-demo</module>
-		<module>jds-client-receiver</module>
+		<module>jds-core</module>
+		<module>jds-core-tester</module>
+		<module>jds-receiver</module>
 		<module>jds-web</module>
 		<module>jds-web-service</module>
 	</modules>

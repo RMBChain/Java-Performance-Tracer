@@ -12,15 +12,15 @@ Next Steps:
 
 >`1. EFK(Elasticsearch, Filebeat, Kibana)`
 
->`&nbsp;&nbsp;&nbsp;&nbsp;https://blog.csdn.net/belonghuang157405/article/details/88530820`
+>`https://blog.csdn.net/belonghuang157405/article/details/88530820`
 
 >`2. Docker Ingress`
 
->`&nbsp;&nbsp;&nbsp;&nbsp;`
+>` `
 
 >`3. Eureka`
 
->`&nbsp;&nbsp;&nbsp;&nbsp;https://www.fangzhipeng.com/springcloud/2017/06/01/sc01-eureka.html`
+>`https://www.fangzhipeng.com/springcloud/2017/06/01/sc01-eureka.html`
 
 ---
 
@@ -29,7 +29,7 @@ Next Steps:
 >`1. build jds`
 
 ```
-Install到本地， 不    生成docker images
+Install到本地， 不生成docker images
 cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 
@@ -184,7 +184,7 @@ git pull
 
 >`9. run follow projects：`
 
->`&nbsp;&nbsp;&nbsp;&nbsp; jds-client-receiver project`
+>`&nbsp;&nbsp;&nbsp;&nbsp; jds-receiver project`
 
 >`&nbsp;&nbsp;&nbsp;&nbsp; jds-web-service project`
 

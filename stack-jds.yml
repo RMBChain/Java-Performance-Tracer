@@ -49,10 +49,10 @@ services:
       - 7780:80
     environment:
       REDIS_1_HOST: jds-redis
-  jds-client-receiver:
-    image: jds-client-receiver:0.0.1
+  jds-receiver:
+    image: jds-receiver:1.0.8-SNAPSHOT
     restart: always
-    container_name: jds-client-receiver
+    container_name: jds-receiver
     links:
       - jds-mongo   
       - jds-rabbit
@@ -67,19 +67,19 @@ services:
       jds_mongodb_port: 27017
     ports:
       - 8091:8091      
-  jds-client-demo:
-    image: jds-client-demo:0.0.1
+  jds-core-tester:
+    image: jds-core-tester:1.0.8-SNAPSHOT
     restart: always
-    container_name: jds-client-demo
+    container_name: jds-core-tester
     links:
-      - jds-client-receiver  
+      - jds-receiver  
     depends_on:
-      - jds-client-receiver
+      - jds-receiver
     environment:
-      jds_client_receiver_host: jds-client-receiver
+      jds_client_receiver_host: jds-receiver
       jds_client_receiver_port: 8091
   jds-web-service:
-    image: jds-web-service:0.0.1
+    image: jds-web-service:1.0.8-SNAPSHOT
     restart: always
     container_name: jds-web-service
     links:
@@ -90,7 +90,7 @@ services:
       - jds-rabbit
       - jds-redis
       - jds-mongo
-      - jds-client-receiver
+      - jds-receiver
     environment:
       jds_mongodb_host: jds-mongo
       jds_mongodb_port: 27017    
@@ -99,7 +99,7 @@ services:
     ports:
       - 28080:28080
   jds-web:
-    image: jds-web:0.0.1
+    image: jds-web:1.0.8-SNAPSHOT
     restart: always
     container_name: jds-web
     links:

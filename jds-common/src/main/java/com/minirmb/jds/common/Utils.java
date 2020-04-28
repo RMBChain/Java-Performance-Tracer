@@ -97,6 +97,6 @@ public class Utils {
 	}
 	
 	public static String GetFolderInUsehome() {
-		return System.getProperties().getProperty("user.home") + File.separator + ".JavaDynamicSnapshot" + File.separator;
+		return System.getProperties().getProperty("user.home") + File.separator + ".jds" + File.separator;
 	}
 }
