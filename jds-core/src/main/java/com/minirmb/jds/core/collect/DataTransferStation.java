@@ -54,20 +54,6 @@ public class DataTransferStation implements Runnable {
 	public static synchronized void Init(RootConfig rootConfig) throws IOException  {
 		instance = new DataTransferStation();
 
-		// shutdown hook
-		Runtime.getRuntime().addShutdownHook(new Thread() {
-			public void run() {
-				synchronized (instance.transferNotifier) {
-					LogUtil.log("***send " + SnapshotFlag.PrefixForDisconnect + " !!!!!!");					
-					sendData(SnapshotFlag.PrefixForDisconnect);
-					instance.transferNotifier.notifyAll();
-					instance.isContinue.set(false);
-					instance.transferNotifier.notifyAll();
-					LogUtil.log("***find sign for System shutdown !!!!!!");				
-				}
-			}
-		});
-
 		// Regular transfer data from MemoryTransferStation to FileTransferStation
 		new Timer(true).schedule(new TimerTask() {
 			public void run() {
@@ -89,7 +75,7 @@ public class DataTransferStation implements Runnable {
 				instance.localFileTransfer = new LocalFileTransfer();
 			}
 		}
-		
+
 		// start thread
 		Thread  dataTransferStation = new Thread(instance, DataTransferStation.class.getSimpleName());
 		dataTransferStation.setDaemon(true);
@@ -97,7 +83,7 @@ public class DataTransferStation implements Runnable {
 	}
 
 	/**
-	 * We don't want to use multi-thread in this method inner.
+	 * We don't use multi-thread in this method inner.
 	 */
 	@Override
 	public void run() {
@@ -117,19 +103,14 @@ public class DataTransferStation implements Runnable {
 						localFileTransfer.transfer(data);
 					}
 				}
-				if(buffer.indexOf(SnapshotFlag.PrefixForDisconnect)>=0) {
-					//收到 shutdownhook 发送的断开连接的信息.
-					isContinue.set(false);
-					LogUtil.log("Will shutdown...   ");
-				}else {
-					synchronized (transferNotifier) {
-						try {
-							transferNotifier.wait();
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-							LogUtil.log("***DataTransferStation " + Utils.ExceptionStackTraceToString(e));
-						}
-					}					
+
+				synchronized (transferNotifier) {
+					try {
+						transferNotifier.wait();
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+						LogUtil.log("***DataTransferStation " + Utils.ExceptionStackTraceToString(e));
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -138,6 +119,5 @@ public class DataTransferStation implements Runnable {
 		nioTransfer.close();
 		localFileTransfer.close();
 		LogUtil.log("***DataTransferStation shutdown!!!!!!");
-		
 	}
 }

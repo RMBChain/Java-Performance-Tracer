@@ -17,7 +17,6 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.scheduling.annotation.EnableAsync;
 import org.springframework.stereotype.Component;
 
-import com.minirmb.jds.common.SnapshotFlag;
 import com.minirmb.jds.common.Utils;
 
 import lombok.extern.slf4j.Slf4j;
@@ -105,11 +104,6 @@ public class NIOServer {
 				String data = new String(Arrays.copyOf(byteBuffer.array(), read));
 				dbTransfer.transfer(data);
 				socketChannel.write(ByteBuffer.wrap(Utils.Int2Bytes(read)));
-				if (data.contains(SnapshotFlag.PrefixForDisconnect)) {
-					shouldCloseSocketChannel = true;
-					shouldContinue = false;
-					log.info("Connection will be closed by client. socketChannelId : " + selectionKey.attachment());
-				}
 			} else if (read == -1) {
 				shouldCloseSocketChannel = true;
 				log.debug("Connection unavaliabled socketChannelId : " + selectionKey.attachment() + ", read count : " + read);
