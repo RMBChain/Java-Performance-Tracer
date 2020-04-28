@@ -28,6 +28,5 @@ public class JDS_CoreTester_Application {
 
 		System.out.println("JDS_ClientDemo_Application Over!!!!!!");
 		System.out.println("End " + JDS_CoreTester_Application.class);
-		System.exit(0);
 	}
 }
