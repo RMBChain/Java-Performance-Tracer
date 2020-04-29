@@ -1,5 +1,7 @@
 # Java Dynamic Snapshot : jds-core
 
+![avatar](JDS-Core.png)
+
 ##请使用jds-core-tester来测试本工程
 
 ##需要设置的环境变量
