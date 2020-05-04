@@ -21,7 +21,7 @@
 
 >`5. run [mvn clean install -Dmaven.test.skip=true] `
 
->`6. run docker-compose -f stack-jds.yml up`
+>`6. run docker-compose -f stack-jds.yml up -d`
 
 >`7. browse [http://localhost:18080](http://localhost:18080) to see main page.`
 
