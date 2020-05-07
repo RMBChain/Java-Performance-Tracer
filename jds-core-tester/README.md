@@ -2,7 +2,7 @@
 
 echo -----------------jds-----------------
 
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds
+cd C:\\_minirmb_\\JavaDynamicSnapshot_workspace\\jds
 
 mvn clean install
 
@@ -10,26 +10,27 @@ mvn -f build.xml compile
 
 echo -----------------jds-core-tester-----------------
 
-C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client
+C:\project\Java-Dynamic-Snapshot\jds\jds-client
 
 mvn clean package install 
 
  
 echo -----------------jds-core-tester-----------------
 
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client-demo
+cd C:\project\Java-Dynamic-Snapshot\jds-client-demo
 
 mvn clean package 
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 
 echo -----------------run test-----------------
+set      baseDir=C:\project\Java-Dynamic-Snapshot
+set     agentJar=%baseDir%\jds-core\target\jds-core-1.0.8-SNAPSHOT.jar
+set      testJar=%baseDir%\jds-core-tester\target\jds-core-tester-1.0.8-SNAPSHOT.jar
+set configFolder=%baseDir%\jds-core-tester\workspace
 
-set     agentJar=C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-core\target\jds-core-1.0.8-SNAPSHOT.jar
-set      testJar=C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-core-tester\target\jds-core-tester-1.0.8-SNAPSHOT.jar
-set configFolder=C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-core-tester\workspace
-
-java -javaagent:%agentJar%=%configFolder%   -cp  %testJar% com.thirdpart.jds.test.JDS_ClientTester_Application
+cd %baseDir%
+java -javaagent:%agentJar%=%configFolder% -cp  %testJar% com.thirdpart.jds.test.JDS_CoreTester_Application
 
 
 echo -----------------docker-----------------
