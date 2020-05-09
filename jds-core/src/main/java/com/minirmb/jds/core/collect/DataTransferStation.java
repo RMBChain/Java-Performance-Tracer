@@ -26,26 +26,27 @@ import com.minirmb.jds.core.utils.LogUtil;
 public class DataTransferStation implements Runnable {
 
 	private static DataTransferStation instance = null;
-	public final Object transferNotifier = new Object();
+	private final Object transferNotifier = new Object();
 	private AtomicBoolean isContinue = new AtomicBoolean(true);
 	private LocalFileTransfer localFileTransfer = null;
 	private NIOTransfer nioTransfer = null;
-	private Queue<String> dataQueue = new ConcurrentLinkedQueue<String>();
+	private Queue<StringBuilder> dataQueue = new ConcurrentLinkedQueue<>();
 	
 	private DataTransferStation() {
 	}
 	
-	public static void sendData(String... data) {
+	public static void sendData(StringBuilder... data) {
 		StringBuilder builder = new StringBuilder();
-		for (Object s : data) {
-			builder.append(String.valueOf(s));
+		for (StringBuilder s : data) {
+			builder.append(s.toString());
+			CacheForStringBuilder.put(s);
 		}
 		builder.append("\n");
-		sendData(builder.toString());
+		sendData(builder);
 	}
 
-	public static void sendData(String data) {
-		instance.dataQueue.offer(SnapshotFlag.FlagForLineBreaker + data );
+	public static void sendData(StringBuilder data) {
+		instance.dataQueue.offer(data.insert(0,SnapshotFlag.FlagForLineBreaker) );
 		synchronized (instance.transferNotifier) {
 			instance.transferNotifier.notifyAll();
 		}
@@ -77,7 +78,7 @@ public class DataTransferStation implements Runnable {
 		}
 
 		// start thread
-		Thread  dataTransferStation = new Thread(instance, DataTransferStation.class.getSimpleName());
+		Thread dataTransferStation = new Thread(instance, DataTransferStation.class.getSimpleName());
 		dataTransferStation.setDaemon(true);
 		dataTransferStation.start();
 	}
@@ -87,21 +88,17 @@ public class DataTransferStation implements Runnable {
 	 */
 	@Override
 	public void run() {
-		StringBuffer buffer = new StringBuffer();		
 		try {
 			while (isContinue.get()) {
-				buffer.delete(0, buffer.length());
 				while(!dataQueue.isEmpty()) {
-					buffer.append(dataQueue.poll());
-				}
-				if (buffer.length() > 0) {
-					String data = buffer.toString();
+					StringBuilder tempStr = dataQueue.poll();
 					if (null != nioTransfer) {// 保存到remote
-						nioTransfer.transfer(data);
+						nioTransfer.transfer(tempStr);
 					}
 					if (null != localFileTransfer) {// 保存到本地
-						localFileTransfer.transfer(data);
+						localFileTransfer.transfer(tempStr);
 					}
+					CacheForStringBuilder.put(tempStr);
 				}
 
 				synchronized (transferNotifier) {

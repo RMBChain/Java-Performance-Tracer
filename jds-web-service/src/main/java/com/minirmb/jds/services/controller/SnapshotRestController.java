@@ -1,6 +1,7 @@
 package com.minirmb.jds.services.controller;
 
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -37,14 +38,14 @@ public class SnapshotRestController {
 
 	@RequestMapping(value = "/listMethodHierarchy")
 	public List<SnapshotRow> listMethodHierarchy(@RequestParam(name = "snapshotId") String snapshotId,
-			@RequestParam(name = "parentId") String parentId) {
+												 @RequestParam(name = "threadId", required = false) Long threadId,
+												 @RequestParam(name = "serial", required = false) Long serial) {
 		List<SnapshotRow> result;
-		if (null == parentId || parentId.trim().length() == 0) {
+		if (Objects.isNull( threadId ) || Objects.isNull(serial)) {
 			result = snapshotRowMongoService.findRootSnapshotRow(snapshotId);
 		} else {
-			result = snapshotRowMongoService.findSnapshotRowByParentId(snapshotId, parentId);
+			result = snapshotRowMongoService.findSnapshotRowByParent(snapshotId, threadId, serial);
 		}
 		return result;
 	}
-
 }

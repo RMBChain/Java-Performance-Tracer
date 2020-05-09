@@ -3,6 +3,7 @@ package com.minirmb.jds.web.controller;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,7 +46,7 @@ public class SnapshotController {
 	}
 
 	private List<MethodStatisticsVO> convertToMethodStatisticsVO(MethodStatisticsVO[] msEntities){
-		List<MethodStatisticsVO> result = new ArrayList<MethodStatisticsVO>();
+		List<MethodStatisticsVO> result = new ArrayList<>();
 		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MMdd HH:mm:ss SSS");
 		for(MethodStatisticsVO ms : msEntities) {
 			MethodStatisticsVO vo = new MethodStatisticsVO();
@@ -63,9 +64,15 @@ public class SnapshotController {
 
 	@RequestMapping(value = "/listMethodHierarchy")
 	public List<SnapshotRowTreeVO> listMethodHierarchy(@RequestParam(name = "snapshotId") String snapshotId,
-			@RequestParam(name = "parentId") String parentId) {
-		String url = urlForListMethodHierarchy + "?snapshotId=" + snapshotId + "&parentId=" + parentId;
-		SnapshotRowTreeVO[] resultInRest = restTemplate.getForObject(url, SnapshotRowTreeVO[].class);
+			@RequestParam(name = "threadId", required = false) String threadId, @RequestParam(name = "serial", required = false) String serial) {
+		StringBuilder url = new StringBuilder(urlForListMethodHierarchy + "?snapshotId=" + snapshotId);
+		if(!Objects.isNull(threadId)){
+			url.append("&threadId=" + threadId);
+		}
+		if(!Objects.isNull(serial)){
+			url.append("&serial=" + serial);
+		}
+		SnapshotRowTreeVO[] resultInRest = restTemplate.getForObject(url.toString(), SnapshotRowTreeVO[].class);
 		return convertToSnapshotRowTreeVO(resultInRest);
 	}
 

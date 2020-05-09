@@ -10,8 +10,7 @@ public class SnapshotRow {
 	private Long threadId;
 	private Long hierarchy;
 	private Long serial;
-	private Boolean mergered;
-	private String parentId;
+	private Boolean merged;
 	private String packageName;
 	private String className;
 	private String methodName;
@@ -19,4 +18,6 @@ public class SnapshotRow {
 	private Date endTime;
 	private Long usedTime;
 	private String inOrOut;
+	private Long methodId;
+	private Long parentId;//parent serial
 }

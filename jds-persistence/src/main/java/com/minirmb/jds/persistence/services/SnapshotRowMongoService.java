@@ -29,7 +29,7 @@ public class SnapshotRowMongoService {
 	public List<SnapshotRow> findUnMergedRow(String snapshotId) {
 		SnapshotRow row = new SnapshotRow();
 		row.setSnapshotId(snapshotId);
-		row.setMergered(false);
+		row.setMerged(false);
 		return snapshotRowMongoRepository.findAll(Example.of(row), Sort.by(Sort.Direction.ASC, "serial"));
 	}
 
@@ -40,17 +40,20 @@ public class SnapshotRowMongoService {
 	public List<SnapshotRow> findRootSnapshotRow(String snapshotId) {
 		SnapshotRow row = new SnapshotRow();
 		row.setSnapshotId(snapshotId);
-		row.setHierarchy(1l);
+		row.setHierarchy(1L);
 		row.setInOrOut("in");
-		return snapshotRowMongoRepository.findAll(Example.of(row), Sort.by(Sort.Direction.DESC, "serial"));
+		Sort sort =  Sort.by(Sort.Direction.ASC, "serial").by(Sort.Direction.ASC, "threadId");
+		return snapshotRowMongoRepository.findAll(Example.of(row), sort);
 	}
 
-	public List<SnapshotRow> findSnapshotRowByParentId(String snapshotId, String parentId) {
+	public List<SnapshotRow> findSnapshotRowByParent(String snapshotId, Long threadId, Long serial) {
 		SnapshotRow row = new SnapshotRow();
 		row.setSnapshotId(snapshotId);
-		row.setParentId(parentId);
+		row.setThreadId(threadId);
+		row.setParentId(serial);
 		row.setInOrOut("in");
-		return snapshotRowMongoRepository.findAll(Example.of(row), Sort.by(Sort.Direction.DESC, "serial"));
+		Sort sort =  Sort.by(Sort.Direction.ASC, "serial").by(Sort.Direction.ASC, "threadId");
+		return snapshotRowMongoRepository.findAll(Example.of(row), sort);
 	}
 
 	public List<MethodStatistics> findBySnapshotId(String snapshotId) {

@@ -4,8 +4,8 @@ import java.io.IOException;
 
 public interface TransferI {
 
-	public long transfer(String data) throws IOException;
+	long transfer(StringBuilder data) throws IOException;
 
-	public void close() ;
+	void close() ;
 
 }

@@ -18,7 +18,6 @@ public class NIOTransfer implements TransferI{
 
 	public void init(RootConfig rootConfig) throws IOException {
 		Map<String, String> env = System.getenv();
-		System.out.println("----------------------------------");
 		String serverIp = env.getOrDefault("jds_client_receiver_host", "localhost");
 		int serverPort = Integer.parseInt(env.getOrDefault("jds_client_receiver_port", "8091"));
 		System.out.println("!!! jds_client_receiver_host : " + serverIp);
@@ -28,9 +27,9 @@ public class NIOTransfer implements TransferI{
 	}
 
 	@Override
-	public long transfer(String measurData) throws IOException {
+	public long transfer(StringBuilder measurData) throws IOException {
 
-		byte[] inputBytes = measurData.getBytes();
+		byte[] inputBytes = measurData.toString().getBytes();
 
 		clientChannel.write(ByteBuffer.wrap(inputBytes));
 
@@ -43,7 +42,7 @@ public class NIOTransfer implements TransferI{
 					+ serverReceiveLength);
 		}
 
-		return measurData.getBytes().length;
+		return inputBytes.length;
 	}
 
 	@Override
@@ -64,6 +63,6 @@ public class NIOTransfer implements TransferI{
 		NIOTransfer np = new NIOTransfer();
 		np.clientChannel = SocketChannel.open();
 		np.clientChannel.connect(new InetSocketAddress("localhost", 9999));
-		np.transfer("==================");
+		np.transfer(new StringBuilder("=================="));
 	}
 }

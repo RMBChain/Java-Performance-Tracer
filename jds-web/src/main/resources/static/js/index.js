@@ -9,12 +9,12 @@ $(document).ready(function(){
         {title:'Class And Method Name', field:'classAndMethodName',  width:700},
         {title:'Class Name',            field:'className',           width:260, hidden:'true'},
         {title:'Method Name',           field:'methodName',          width:80,  hidden:'true'},
-        {title:'Used Time(ms)',             field:'usedTime',            width:80,  align:'right'},
-        {title:'Package Name',          field:'packageName',         width:500},
+        {title:'Used Time(ms)',         field:'usedTime',            width:80,  align:'right'},
+        {title:'Package Name',          field:'packageName',         width:500}
     ]];
 
 	$('#methodHierarchy').treegrid({
-	    columns : methodHierarchyColumns,
+	    columns : methodHierarchyColumns
 	});
 
 	//methodHierarchy
@@ -34,27 +34,26 @@ $(document).ready(function(){
 	    columns:[[
 	        {field:'description',title:'description',width:100,align:'left'}
 	    ]],
-	    onClickRow: function(index, row){
-	    	//method Hierarchy
-            var methodHierarchyUrl = 'listMethodHierarchy?snapshotId=' + row.id + '&parentId=';
+	    onClickRow: function(index, snapshot){
+	    	//---method Hierarchy
+            var methodHierarchyUrl = 'listMethodHierarchy?snapshotId=' + snapshot.id;
             console.log( methodHierarchyUrl );
-
         	$('#methodHierarchy').treegrid({
         	    url       :methodHierarchyUrl,
         	    idField   :'id',
         	    treeField :'classAndMethodName',
         	    columns   :methodHierarchyColumns,
         	    onBeforeExpand : function(row) {
-        			if (row) {				
-        				$(this).treegrid('options').url = methodHierarchyUrl + row.id;
+        			if (row) {
+        				$(this).treegrid('options').url = methodHierarchyUrl + '&threadId=' + row.threadId + "&serial=" + row.serial;
         				console.log( $(this).treegrid('options').url );
         			}
         			return true;
         	    }
         	});
 
-	    	//method Statistics
-            var methodStatisticsUrl = 'listStatistics?snapshotId='+ row.id;
+	    	//---method Statistics
+            var methodStatisticsUrl = 'listStatistics?snapshotId='+ snapshot.id;
         	$('#methodStatistics').datagrid({
         	    url       :methodStatisticsUrl,
         	    columns   :methodStatisticsColumns

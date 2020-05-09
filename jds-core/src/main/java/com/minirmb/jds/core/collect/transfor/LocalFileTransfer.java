@@ -25,13 +25,13 @@ public class LocalFileTransfer implements TransferI {
 	}
 
 	private String getFilename(int fileOrder) {
-		StringBuilder filePath = new StringBuilder();
-		filePath.append(dataFolder).append(Collector.SnapshotId).append("-");
+		StringBuilder filePath = new StringBuilder(dataFolder);
+		filePath.append(Collector.SnapshotId).append("-");
 		filePath.append(Utils.padding(fileOrder, 3)).append(DataFilePostFix);
 		return filePath.toString();
 	}
 
-	public long transfer(String data) throws IOException {
+	public long transfer(StringBuilder data) throws IOException {
 		System.out.print(".");
 		
 		if (currentFileSize > fileSizeLimit) {// M
@@ -39,12 +39,12 @@ public class LocalFileTransfer implements TransferI {
 			currentFileSize = 0;		
 			currentFile = new File(getFilename(fileCount));
 		}
-		currentFileSize += data.getBytes().length;
+		currentFileSize += data.toString().getBytes().length;
 		// store data to file
 		try (FileOutputStream currentFOS = new FileOutputStream(currentFile,true);
 				FileChannel fileChannel = currentFOS.getChannel();
 				PrintWriter pr = new PrintWriter(currentFOS);
-				FileLock lock = fileChannel.lock();
+				FileLock lock = fileChannel.lock()
 				) {
 			pr.print(data);
 		}
