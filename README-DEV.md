@@ -30,15 +30,15 @@ Next Steps:
 
 ```
 Install到本地， 不生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\
+cd C:\project\Java-Dynamic-Snapshot
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 Install到本地，生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\
+cd C:\project\Java-Dynamic-Snapshot
 mvn clean install -Dmaven.test.skip=true
 
 发布到远程仓库
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\
+cd C:\project\Java-Dynamic-Snapshot
 mvn clean deploy  -Dmaven.test.skip=true -Ddockerfile.skip=true -U
 
 更新版本并进行tag
@@ -51,7 +51,7 @@ mvn -Darguments="-DskipTests -Dmaven.test.skip=true -Ddockerfile.skip=true" --ba
 >`2. build jds-client`
 
 ```
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client
+cd C:\project\Java-Dynamic-Snapshotjds-client
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 ```
 
@@ -59,11 +59,11 @@ mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 ```
 不生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client-receiver
+cd C:\project\Java-Dynamic-Snapshotjds-client-receiver
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client-receiver
+cd C:\project\Java-Dynamic-Snapshotjds-client-receiver
 mvn clean install -Dmaven.test.skip=true
 
 在docker中运行jds-client-receiver
@@ -74,11 +74,11 @@ docker run --rm -it -e jds_client_receiver_port=8091 -p 8091:8091 --name jds-cli
 
 ```
 不生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client-demo
+cd C:\project\Java-Dynamic-Snapshotjds-client-demo
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client-demo
+cd C:\project\Java-Dynamic-Snapshotjds-client-demo
 mvn clean install -Dmaven.test.skip=true
 
 在docker中运行 jds-client-demo
@@ -90,11 +90,11 @@ docker run -it --rm -e jds_client_receiver_server=192.168.1.104 -e jds_client_re
 
 ```
 不生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-web
+cd C:\project\Java-Dynamic-Snapshotjds-web
 mvn clean package -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 生成docker images
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-web
+cd C:\project\Java-Dynamic-Snapshotjds-web
 mvn clean package -Dmaven.test.skip=true
 
 在docker中运行 jds-web
@@ -105,10 +105,10 @@ docker run -it --rm -e jds_client_receiver_server=192.168.1.104 -e jds_client_re
 >`A. start and stop middleware`
 
 ```
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\
+cd C:\project\Java-Dynamic-Snapshot
 docker-compose -f stack-jds-dev.yml up
 
-cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\
+cd C:\project\Java-Dynamic-Snapshot
 docker-compose -f stack-jds-dev.yml down
 
 ```
