@@ -12,7 +12,7 @@ spring:
 
   redis:
     host: ${jds_redis_host:127.0.0.1}
-    port: ${jds_redis_port:6373}
+    port: ${jds_redis_port:6379}
 
   rabbitmq:
     host: ${jds_rabbitmq_host:127.0.0.1}
