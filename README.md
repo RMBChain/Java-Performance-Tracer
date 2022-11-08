@@ -1,5 +1,5 @@
 ***
-# Java Dynamic Snapshot Production
+# Java Performance Tracer
 
 >使用本工具能够记录执行了哪些方法，这些方法执行了多长时间。并且可以看到方法的调用链路。
 
@@ -9,7 +9,7 @@
 
 ---
 
-#Usage For JDS
+#Usage For JPT
 
 >`1. Install Docker and Expose daemon` 
 
