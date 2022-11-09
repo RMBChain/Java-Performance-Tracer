@@ -2,7 +2,7 @@
 ***
 # Java Performance Tracer
 
-![avatar](JDS-DataFlow.png)
+![avatar](JPS-DataFlow.png)
 
 
 

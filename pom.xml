@@ -10,18 +10,18 @@
 
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.minirmb</groupId>
-	<artifactId>JavaDynamicSnapshot</artifactId>
+	<artifactId>JavaPerformanceTracer</artifactId>
 	<version>1.0.8-SNAPSHOT</version>
 	<packaging>pom</packaging>
 
 	<modules>
-		<module>jds-common</module>
-		<module>jds-persistence</module>
-		<module>jds-core</module>
-		<module>jds-core-tester</module>
-		<module>jds-receiver</module>
-		<module>jds-web</module>
-		<module>jds-web-service</module>
+		<module>jps-common</module>
+		<module>jps-persistence</module>
+		<module>jps-core</module>
+		<module>jps-core-tester</module>
+		<module>jps-receiver</module>
+		<module>jps-web</module>
+		<module>jps-web-service</module>
 	</modules>
 
 	<properties>
