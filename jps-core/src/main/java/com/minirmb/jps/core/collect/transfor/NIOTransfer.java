@@ -62,7 +62,7 @@ public class NIOTransfer implements TransferI{
 	public static void main(String[] args) throws Exception {
 		NIOTransfer np = new NIOTransfer();
 		np.clientChannel = SocketChannel.open();
-		np.clientChannel.connect(new InetSocketAddress("localhost", 9999));
+		np.clientChannel.connect(new InetSocketAddress("localhost", 8091));
 		np.transfer(new StringBuilder("=================="));
 	}
 }

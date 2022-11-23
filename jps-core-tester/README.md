@@ -1,3 +1,22 @@
+
+export      baseDir=/Users/spooner/Desktop/OpenSource/github.com/RMBChain/Java-Performance-Tracer/
+export     agentJar=$baseDir/jps-core/target/jps-core-1.0.8-SNAPSHOT.jar
+export      testJar=$baseDir/jps-core-tester/target/jps-core-tester-1.0.8-SNAPSHOT.jar
+export configFolder=$baseDir/jps-core-tester/workspace
+
+cd $baseDir
+java -javaagent:$agentJar=$configFolder -cp  $testJar com.thirdpart.jds.test.JDS_CoreTester_Application
+
+set baseDir=C:\project\Java-Dynamic-Snapshot 
+set agentJar=%baseDir%\jds-core\target\jps-core-1.0.8-SNAPSHOT.jar 
+set testJar=%baseDir%\jds-core-tester\target\jps-core-tester-1.0.8-SNAPSHOT.jar 
+set configFolder=%baseDir%\jds-core-tester\workspace
+
+cd %baseDir% 
+java -javaagent:%agentJar%=%configFolder% -cp %testJar% com.thirdpart.jds.test.JDS_CoreTester_Application
+
+java -javaagent:%agentJar%=%configFolder% -cp %testJar%
+
 # Java Performance Tracer Test
 
 echo -----------------jps-----------------

@@ -1,19 +1,19 @@
 # Java Performance Tracer : jps-core
 
-![avatar](JPS-Core.png)
+![avatar](JPT-Core.png)
 
 # 原理
 在类加载器加载.class字节码时，使用asm在方法之前和之后加入记录时间的字节码。
 
 使用方法
 ```
-set      baseDir=C:\project\Java-Dynamic-Snapshot
-set     agentJar=%baseDir%\jps-core\target\jps-core-1.0.8-SNAPSHOT.jar
-set      testJar=%baseDir%\jps-core-tester\target\jps-core-tester-1.0.8-SNAPSHOT.jar
-set configFolder=%baseDir%\jps-core-tester\workspace
+export      baseDir=/Users/spooner/Desktop/OpenSource/github.com/RMBChain/Java-Performance-Tracer
+export     agentJar=$baseDir/jps-core/target/jps-core-1.0.8-SNAPSHOT.jar
+export      testJar=$baseDir/jps-core-tester/target/jps-core-tester-1.0.8-SNAPSHOT.jar
+export configFolder=$baseDir/jps-core-tester/workspace
 
-cd %baseDir%
-java -javaagent:%agentJar%=%configFolder% -cp  %testJar% com.thirdpart.jds.test.JDS_CoreTester_Application
+cd $baseDir
+java -javaagent:$agentJar=$configFolder -cp  $testJar com.thirdpart.jds.test.JDS_CoreTester_Application
 ```
 
 配置说明

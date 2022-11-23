@@ -3,12 +3,11 @@ package com.minirmb.jps.test;
 import com.minirmb.jps.core.collect.DataTransferStation;
 import com.minirmb.jps.core.config.RootConfig;
 import com.minirmb.jps.core.utils.LogUtil;
-import com.sun.org.apache.xpath.internal.operations.String;
 
 public class DataTransferStationTest {
 
 	public static void main(String[] args) throws Exception {
-		RootConfig.Init("C:\\_minirmb_\\JavaDynamicSnapshot_workspace\\jds\\jds-core-tester\\workspace");
+		RootConfig.Init("/Users/spooner/Desktop/OpenSource/github.com/RMBChain/Java-Performance-Tracer/jps-core-tester/workspace");
 		DataTransferStation.Init(RootConfig.GetInstance());
 
 		DataTransferStation.sendData( new StringBuilder("asdfsadf 1"));

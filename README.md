@@ -26,7 +26,7 @@ Next Steps:
 
 ##Command Help
 
->`1. build jds`
+>`1. build jps`
 
 ```
 Install到本地， 不生成docker images
@@ -48,68 +48,68 @@ mvn -Darguments="-DskipTests -Dmaven.test.skip=true -Ddockerfile.skip=true" --ba
 mvn -Darguments="-DskipTests -Dmaven.test.skip=true -Ddockerfile.skip=true" --batch-mode release:clean release:prepare release:perform
 ```
 
->`2. build jds-client`
+>`2. build jps-client`
 
 ```
-cd C:\project\Java-Dynamic-Snapshotjds-client
+cd C:\project\Java-Dynamic-Snapshotjps-client
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 ```
 
->`3. build jds-client-receiver`
+>`3. build jps-client-receiver`
 
 ```
 不生成docker images
-cd C:\project\Java-Dynamic-Snapshotjds-client-receiver
-mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
-
-生成docker images
-cd C:\project\Java-Dynamic-Snapshotjds-client-receiver
-mvn clean install -Dmaven.test.skip=true
-
-在docker中运行jds-client-receiver
-docker run --rm -it -e jds_client_receiver_port=8091 -p 8091:8091 --name jds-client-receiver jds-client-receiver:0.0.1
-```
-
->`4. build jds-client-demo`
-
-```
-不生成docker images
-cd C:\project\Java-Dynamic-Snapshotjds-client-demo
+cd C:\project\Java-Dynamic-Snapshotjps-client-receiver
 mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 生成docker images
-cd C:\project\Java-Dynamic-Snapshotjds-client-demo
+cd C:\project\Java-Dynamic-Snapshotjps-client-receiver
 mvn clean install -Dmaven.test.skip=true
 
-在docker中运行 jds-client-demo
-docker run -it --rm -e jds.client-receiver.server=localhost     -e jds.client-receiver.port=8091 jds-client-demo:0.0.1
-docker run -it --rm -e jds_client_receiver_server=192.168.1.104 -e jds_client_receiver_port=8091 jds-client-demo:0.0.1
+在docker中运行jps-client-receiver
+docker run --rm -it -e jps_client_receiver_port=8091 -p 8091:8091 --name jps-client-receiver jps-client-receiver:0.0.1
 ```
 
->`5. build jds-web`
+>`4. build jps-client-demo`
 
 ```
 不生成docker images
-cd C:\project\Java-Dynamic-Snapshotjds-web
+cd C:\project\Java-Dynamic-Snapshotjps-client-demo
+mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
+
+生成docker images
+cd C:\project\Java-Dynamic-Snapshotjps-client-demo
+mvn clean install -Dmaven.test.skip=true
+
+在docker中运行 jps-client-demo
+docker run -it --rm -e jps.client-receiver.server=localhost     -e jps.client-receiver.port=8091 jps-client-demo:0.0.1
+docker run -it --rm -e jps_client_receiver_server=192.168.1.104 -e jps_client_receiver_port=8091 jps-client-demo:0.0.1
+```
+
+>`5. build jps-web`
+
+```
+不生成docker images
+cd C:\project\Java-Dynamic-Snapshotjps-web
 mvn clean package -Dmaven.test.skip=true -Ddockerfile.skip=true
 
 生成docker images
-cd C:\project\Java-Dynamic-Snapshotjds-web
+cd C:\project\Java-Dynamic-Snapshotjps-web
 mvn clean package -Dmaven.test.skip=true
 
-在docker中运行 jds-web
-docker run -it --rm -e jds.client-receiver.server=localhost     -e jds.client-receiver.port=8091 jds-web:0.0.1
-docker run -it --rm -e jds_client_receiver_server=192.168.1.104 -e jds_client_receiver_port=8091 jds-web:0.0.1
+在docker中运行 jps-web
+docker run -it --rm -e jps.client-receiver.server=localhost     -e jps.client-receiver.port=8091 jps-web:0.0.1
+docker run -it --rm -e jps_client_receiver_server=192.168.1.104 -e jps_client_receiver_port=8091 jps-web:0.0.1
 ```
 
 >`A. start and stop middleware`
 
 ```
 cd C:\project\Java-Dynamic-Snapshot
-docker-compose -f stack-jds-dev.yml up
+docker-compose -f stack-jps-dev.yml up
 
 cd C:\project\Java-Dynamic-Snapshot
-docker-compose -f stack-jds-dev.yml down
+docker-compose -f stack-jps-dev.yml down
 
 ```
 
@@ -139,11 +139,11 @@ git pull
 
 >`Rabbit admin : http://localhost:15672`
 
->`jds-client-receiver port : 8091`
+>`jps-client-receiver port : 8091`
 
->`jds-web-service port : 28080`
+>`jps-web-service port : 28080`
 
->`jds-web : http://localhost:18080`
+>`jps-web : http://localhost:18080`
 
 >`nexus3 : http://localhost:7081`
 
@@ -152,49 +152,44 @@ git pull
 
 ##DEV ENV
 
->`构造开发环境需要先运行  docker-compose -f stack-jds-dev.yml up 来使用docker创建环境。`
+>`构造开发环境需要先运行  docker-compose -f stack-jps-dev.yml up 来使用docker创建环境。`
 
->`1. Install Docker and Expose daemon` 
+>`1. Install Software` 
+```
+Docker
+Maven
+Git
+```
 
 >`2. run docker swarm init` 
 
 >`3. Pull follow images from docker hub:`
+```
+docker pull mongo:4.2.3
+docker pull mongo-express:0.54.0
+docker pull redis:6.0-rc1
+docker pull erikdubbelboer/phpredisadmin:v1.13.1
+docker pull rabbitmq:3.7-management
+docker pull rabbitmq:3.7
+```
 
->`&nbsp;&nbsp;&nbsp;&nbsp; docker pull mongo:4.2.3`
+>`4. git clone this repositoriy`
 
->`&nbsp;&nbsp;&nbsp;&nbsp; docker pull mongo-express:0.54.0`
+>`5. run [mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true] `
 
->`&nbsp;&nbsp;&nbsp;&nbsp; docker pull redis:6.0-rc1`
+>`6. run docker-compose -f stack-jps-dev.yml up`
 
->`&nbsp;&nbsp;&nbsp;&nbsp; docker pull erikdubbelboer/phpredisadmin:v1.13.1`
+>`7. run follow projects：`
+```
+jps-receiver
+jps-web-service
+jps-web
+jps-client-demo
+```
 
->`&nbsp;&nbsp;&nbsp;&nbsp; docker pull rabbitmq:3.7-management`
+>`8. browse [http://localhost:28080](http://localhost:28080) to see main page.`
 
->`&nbsp;&nbsp;&nbsp;&nbsp; docker pull rabbitmq:3.7`
-
->`4. Install maven and git`
-
->`5. cd C:\_minirmb_\JavaDynamicSnapshot_workspace\jds`
-
->`6. git clone this repositoriy`
-
->`7. run [mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true] `
-
->`8. run docker-compose -f stack-jds-dev.yml up`
-
->`9. run follow projects：`
-
->`&nbsp;&nbsp;&nbsp;&nbsp; jds-receiver project`
-
->`&nbsp;&nbsp;&nbsp;&nbsp; jds-web-service project`
-
->`&nbsp;&nbsp;&nbsp;&nbsp; jds-web project`
-
->`&nbsp;&nbsp;&nbsp;&nbsp; jds-client-demo project`
-
->`10. browse [http://localhost:28080](http://localhost:28080) to see main page.`
-
->`11. docker-compose -f stack-jds-dev.yml down`
+>`9. docker-compose -f stack-jps-dev.yml down`
 
 >`&nbsp;`
 
@@ -213,11 +208,11 @@ git pull
 
 ##Mongo
 
-docker run -it --rm --name jds_mongo_client -p 28017:28017 mongo:4.2.3 bash
+docker run -it --rm --name jps_mongo_client -p 28017:28017 mongo:4.2.3 bash
 
 本地连接：
 
->docker exec -it mongo_jds mongo admin
+>docker exec -it mongo_jps mongo admin
 
 远程连接：
 
@@ -225,14 +220,14 @@ docker run -it --rm --name jds_mongo_client -p 28017:28017 mongo:4.2.3 bash
 
 >docker run -it --rm mongo:4.2.3 bash
       
->mongo mongodb://192.168.1.104/jds
+>mongo mongodb://192.168.1.104/jps
       
 Mongo Operation 
   
 ```  
 db.auth('root', 'example')
 show dbs
-use jds
+use jps
 db.createCollection("runoob")
 show collections
 db.runoob.insert({"name":"json data 1"})
