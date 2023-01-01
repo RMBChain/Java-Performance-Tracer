@@ -23,6 +23,10 @@
 *.tar.gz
 *.rar
 
+# mac
+/*/.DS_Store
+.DS_Store
+
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 /target/
@@ -31,3 +35,4 @@ hs_err_pid*
 /.settings
 /.metadata/
 
+/jpt-backend/.project

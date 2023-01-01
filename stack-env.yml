@@ -17,7 +17,7 @@ services:
     depends_on:
       - jpt-mongo
     ports:
-      - 3000:3000
+      - 2000:3000
     environment:
       MONGO_URL: mongodb://jpt-mongo:27017
 

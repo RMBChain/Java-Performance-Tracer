@@ -2,15 +2,11 @@
 	<parent>
 		<groupId>com.minirmb</groupId>
 		<artifactId>Java-Performance-Tracer</artifactId>
-		<version>1.0.8-SNAPSHOT</version>
+		<version>0.0.1</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jpt-agent</artifactId>
 	<packaging>jar</packaging>
-	<properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>11</java.version>
-	</properties>
 
 	<dependencies>
 		<dependency>
@@ -23,11 +19,6 @@
 			<artifactId>asm-commons</artifactId>
 			<version>9.4</version>
 		</dependency>
-		<dependency>
-			<groupId>com.minirmb</groupId>
-			<artifactId>jpt-common</artifactId>
-			<version>1.0.8-SNAPSHOT</version>
-		</dependency>
 	</dependencies>
 	<build>
 		<plugins>
@@ -35,27 +26,10 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<configuration>
-					<source>11</source>
-					<target>11</target>
+					<source>${java.version}</source>
+					<target>${java.version}</target>
 				</configuration>
 			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-dependency-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>copy</id>
-						<phase>package</phase>
-						<goals>
-							<goal>copy-dependencies</goal>
-						</goals>
-						<configuration>
-							<outputDirectory>${project.build.directory}</outputDirectory>
-						</configuration>
-					</execution>
-				</executions>
-			</plugin>
-
 			<plugin>
 				<artifactId>maven-assembly-plugin</artifactId>
 				<configuration>
@@ -75,6 +49,31 @@
 						<phase>package</phase> <!-- 指定在打包节点执行jar包合并操作 -->
 						<goals>
 							<goal>single</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<!-- copy jar to root dir-->
+			<plugin>
+				<artifactId>maven-antrun-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>copy-lib-src-webapps</id>
+						<phase>package</phase>
+						<configuration>
+							<tasks>
+								<!-- 你将要拷贝的位置 -->
+								<copy todir="${project.build.directory}/../../lib">
+									<!-- 从哪里拷贝 -->
+									<fileset dir="${project.build.directory}">
+										<!-- 拷贝内容 -->
+										<include name="*.jar" />
+									</fileset>
+								</copy>
+							</tasks>
+						</configuration>
+						<goals>
+							<goal>run</goal>
 						</goals>
 					</execution>
 				</executions>

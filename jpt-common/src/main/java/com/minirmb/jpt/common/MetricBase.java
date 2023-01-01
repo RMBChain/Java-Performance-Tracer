@@ -1,6 +1,5 @@
 package com.minirmb.jpt.common;
 
-
 import static com.minirmb.jpt.common.TracerFlag.*;
 
 /**
@@ -10,10 +9,11 @@ import static com.minirmb.jpt.common.TracerFlag.*;
  *
  * 这个类的field不要赋初始值
  */
-public class MetricBase {
+public class MetricBase implements IData{
     private String hostName;
     private String ip;
     private String tracerId;
+    private String bundleId; // 标注每个 OSGI 的 bundle。
     private Long threadId;//当前线程id
     private Integer hierarchy;//当前被调用的方法所在的层级。in 和 out 是相同的。
     private Long serial; // logEnter和logExit被调用的次数。
@@ -54,6 +54,13 @@ public class MetricBase {
         return threadId;
     }
 
+    public String getBundleId() {
+        return bundleId;
+    }
+
+    public void setBundleId(String bundleId) {
+        this.bundleId = bundleId;
+    }
     public void setThreadId(long threadId) {
         this.threadId = threadId;
     }
@@ -140,6 +147,8 @@ public class MetricBase {
         builder.append( ItemSplitter);
         builder.append( tracerId );
         builder.append( ItemSplitter);
+        builder.append( bundleId );
+        builder.append( ItemSplitter);
         builder.append( String.format("%4d",  threadId ));
         builder.append( ItemSplitter);
         builder.append( String.format("%4d",  hierarchy ));
@@ -170,30 +179,31 @@ public class MetricBase {
         if( data.trim().length() > 0 ) {
             metric = new MetricBase();
             String[] items = data.split(TracerFlag.ItemSplitter);
-            //tracerId
+            //host name
             metric.setHostName(items[0].substring(TracerFlag.MeasureDataPrefix.length()));
-            //tracerId
+            //ip
             metric.setIp(items[1].trim());
             //tracerId
             metric.setTracerId(items[2].trim());
+            //bundleId
+            metric.setBundleId(items[3].trim());
             //threadId
-            metric.setThreadId(Long.parseLong(items[3].trim()));
+            metric.setThreadId(Long.parseLong(items[4].trim()));
             //hierarchy
-            metric.setHierarchy(Integer.parseInt(items[4].trim()));
+            metric.setHierarchy(Integer.parseInt(items[5].trim()));
             //serial
-            metric.setSerial(Long.parseLong(items[5].trim()));
+            metric.setSerial(Long.parseLong(items[6].trim()));
             //in or out
-            String type = items[6].trim();
-            metric.setInOrOut(type);
+            metric.setInOrOut(items[7].trim());
+            metric.setClassName(items[8].trim());
+            metric.setMethodName(items[9].trim());
             //start or end time
-            metric.setInTime(Long.parseLong(items[9].trim()));
-            metric.setOutTime(Long.parseLong(items[10].trim()));
-            metric.setClassName(items[7].trim());
-            metric.setMethodName(items[8].trim());
+            metric.setInTime(Long.parseLong(items[10].trim()));
+            metric.setOutTime(Long.parseLong(items[11].trim()));
             //method id
-            metric.setMethodId(Long.parseLong(items[11]));
+            metric.setMethodId(Long.parseLong(items[12]));
             //parent serial id
-            metric.setParentId(Long.parseLong(items[12]));
+            metric.setParentId(Long.parseLong(items[13]));
         }
         return metric;
     }

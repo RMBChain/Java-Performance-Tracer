@@ -1,7 +1,7 @@
 //package com.minirmb.jpt.test;
 //
 //import com.minirmb.jpt.core.collect.DataTransferStation;
-//import com.minirmb.jpt.core.utils.InjectConfig;
+//import com.minirmb.jpt.core.InjectConfig;
 //
 //import java.io.*;
 //import java.util.ArrayList;

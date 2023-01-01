@@ -1,12 +1,11 @@
 package com.thirdpart.jpt.test;
 
 import com.thirdpart.jpt.test.xxx.TestEntry;
-import org.springframework.boot.autoconfigure.SpringBootApplication;
+import lombok.SneakyThrows;
 
 import java.util.ArrayList;
 import java.util.List;
 
-@SpringBootApplication
 public class JPT_CoreTester_Application {
 
     public static void main(String[] args) throws InterruptedException {
@@ -14,16 +13,21 @@ public class JPT_CoreTester_Application {
         TestEntry te = new TestEntry();
         te.sayHello0("");
 
-        for (int i = 0; i < 1; i++) {
+        for (int i = 0; i < 5; i++) {
             te.sayHello1();
         }
 
         {
             List<Thread> threads = new ArrayList<>();
-            for (int i = 0; i < 1; i++) {
-                threads.add(        new Thread(() -> {
+            for (int i = 0; i < 3; i++) {
+                threads.add( new Thread( ()->{
                     te.sayHello1();
-                }));
+                    try {
+                        Thread.sleep(1000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } ));
             }
             threads.forEach(t -> t.start());
         }

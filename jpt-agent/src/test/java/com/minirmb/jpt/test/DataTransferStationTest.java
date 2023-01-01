@@ -1,8 +1,8 @@
 //package com.minirmb.jpt.test;
 //
 //import com.minirmb.jpt.core.collect.DataTransferStation;
-//import com.minirmb.jpt.core.utils.InjectConfig;
-//import com.minirmb.jpt.core.utils.LogUtil;
+//import com.minirmb.jpt.core.InjectConfig;
+//import com.minirmb.jpt.core.LogUtil;
 //import com.sun.org.apache.xpath.internal.operations.String;
 //
 //public class DataTransferStationTest {
