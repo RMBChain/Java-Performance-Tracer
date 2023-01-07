@@ -24,3 +24,9 @@ export const saveInjectConfig = ( params )=> axios.post("/saveInjectConfig",
 )
 
 export const clearAllData = ( params )=> axios.post("/clearAllData")
+
+export const getStatistics = ( params )=> axios.get("/statistics",{
+    params
+})
+
+

@@ -1,7 +1,7 @@
 
 import {Button, Col, Form, Row } from 'antd';
 import React, {useEffect, useState} from 'react';
-import {clearAllData, getInjectConfig} from "../api/tracerAPI";
+import {clearAllData, getInjectConfig} from "../../api/tracerAPI";
 import { FloatButton,message } from 'antd';
 import Modal from "antd/es/modal/Modal";
 

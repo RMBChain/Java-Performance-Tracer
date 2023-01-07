@@ -1,7 +1,7 @@
 
 import {Button, Col, Form, message, Row} from 'antd';
 import React, {useEffect, useState} from 'react';
-import {getInjectConfig, saveInjectConfig } from "../api/tracerAPI";
+import {getInjectConfig, saveInjectConfig } from "../../api/tracerAPI";
 import { FloatButton } from 'antd';
 import TextArea from "antd/es/input/TextArea";
 import { Divider } from 'antd';
@@ -39,6 +39,7 @@ const Setting = () => {
         <>{contextHolder}
             <Form
                 form={form}
+                layout="vertical"
                 name="advanced_search"
                 className="ant-advanced-search-form"
                 onFinish={onFinish}>
@@ -53,7 +54,7 @@ const Setting = () => {
                     <Col span={8}>
                         <Form.Item
                             name={`exclude`}
-                            label={`Exclude`}
+                            label={<div style={{fontSize:"32px"}}>排除的包和类(Exclude)</div>}
                             >
                             <TextArea rows={24} placeholder="Exclude package,classes,method" value={injectConfig.include} />
                         </Form.Item>
@@ -61,13 +62,15 @@ const Setting = () => {
                     <Col span={8}>
                         <Form.Item
                             name={`include`}
-                            label={`Include`}>
+                            label={<div style={{fontSize:"32px"}}>需要处理的包和类(Include)</div>}
+                            >
                             <TextArea rows={24} placeholder="Include package,classes,method" value={injectConfig.exclude}/>
                         </Form.Item>
                     </Col>
                     <Col span={8}>
-                        <div>Memo:</div>
+                        <div style={{fontSize:"32px"}}>说明:</div>
                         <div>Exclude 的优先级高于 Include</div>
+                        <div>指定包名时也即包含子包及包中的类</div>
                     </Col>
                 </Row>
                 <Divider/>
@@ -78,7 +81,7 @@ const Setting = () => {
                     }}
                 >
                     <Button type="primary" htmlType="submit">
-                        Submit
+                        保存
                     </Button>
                 </Form.Item>
             </Form>

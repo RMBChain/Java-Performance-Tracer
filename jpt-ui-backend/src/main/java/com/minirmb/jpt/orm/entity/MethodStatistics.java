@@ -7,7 +7,6 @@ import lombok.Data;
 @Data
 public class MethodStatistics {
 	private String tracerId;
-	private String packageName;
 	private String className;
 	private String methodName;
 	private Long invokedCount;

@@ -62,15 +62,15 @@ public class MetricController {
 		return convertToSnapshotRowTreeVO(result);
 	}
 
-	@RequestMapping(value = "/listStatistics")
-	public List<MethodStatisticsVO> listStatistics(@RequestParam(name = "tracerId") String tracerId) {
-		List<MethodStatistics> aa =  metricMongoService.findByTracerId(tracerId);
+	@RequestMapping(value = "/statistics")
+	public List<MethodStatisticsVO> statistics(@RequestParam(name = "tracerId") String tracerId) {
+		List<MethodStatistics> aa =  metricMongoService.statistics(tracerId);
 		return convertToMethodStatisticsVO(aa);
 	}
 
 	private List<MethodStatisticsVO> convertToMethodStatisticsVO(List<MethodStatistics> msEntities){
 		List<MethodStatisticsVO> result = new ArrayList<>();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MMdd HH:mm:ss SSS");
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS");
 		for(MethodStatistics ms : msEntities) {
 			MethodStatisticsVO vo = new MethodStatisticsVO();
 			BeanUtils.copyProperties(ms, vo);

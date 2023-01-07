@@ -101,20 +101,20 @@ public class MetricMongoService {
 		return mongoTemplate.findOne( query, Metric.class);
 	}
 
-	public List<MethodStatistics> findByTracerId(String tracerId) {
+	public List<MethodStatistics> statistics(String tracerId) {
 		Criteria criteria = Criteria.where("merged").is(true);
 		criteria = criteria.and("inOrOut").is("in");
 		criteria = criteria.and("tracerId").is(tracerId);
 		MatchOperation mo = Aggregation.match(criteria);
 
-		GroupOperation gp = Aggregation.group("tracerId", "packageName", "className", "methodName");
+		GroupOperation gp = Aggregation.group("tracerId", "className", "methodName");
 		gp = gp.count().as("invokedCount");
 		gp = gp.min("inTime").as("firstInvokeTime");
 		gp = gp.max("outTime").as("lastInvokeTime");
 		gp = gp.sum("usedTime").as("usedTime");
 		
 		Aggregation agg = Aggregation.newAggregation(mo, gp, Aggregation.sort(Sort.Direction.DESC, "usedTime"));
-		AggregationResults<MethodStatistics> results = mongoTemplate.aggregate(agg, "snapshotRow",
+		AggregationResults<MethodStatistics> results = mongoTemplate.aggregate(agg, "metric",
 				MethodStatistics.class);
 
 		return results.getMappedResults();

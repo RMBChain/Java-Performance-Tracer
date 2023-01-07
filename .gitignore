@@ -35,4 +35,7 @@ hs_err_pid*
 /.settings
 /.metadata/
 
-/jpt-backend/.project
+/*/.project
+/*/.classpath
+/*/target/classes/
+/*/.settings/

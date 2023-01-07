@@ -1,8 +1,8 @@
 
-import { Col, Form, Row, Select } from 'antd';
+import {Button, Col, Form, Row, Select} from 'antd';
 import React, {useEffect, useState} from 'react';
 import { Table } from 'antd';
-import { listHosts, listMetrics, listTracers} from "../api/tracerAPI";
+import { listHosts, listMetrics, listTracers} from "../../api/tracerAPI";
 import { FloatButton } from 'antd';
 
 const Tracer = () => {
@@ -19,42 +19,42 @@ const Tracer = () => {
 
     const columns = [
         {
-            title: 'Method',
+            title: '方法',
             dataIndex: 'methodName',
             width: '40%',
             key: 'methodName',
             ellipsis: true,
         },
         {
-            title: 'Used Time(ms)',
+            title: '消耗时间(ms)',
             dataIndex: 'usedTime',
             width: '10%',
             key: 'usedTime',
             align:'right'
         },
         {
-            title: 'Class',
+            title: '所在类',
             dataIndex: 'className',
             width: '20%',
             key: 'className',
             ellipsis: true,
         },
         {
-            title: 'hierarchy',
+            title: '层级',
             dataIndex: 'hierarchy',
             key: 'hierarchy',
             width: '5%',
             align:'right'
         },
         {
-            title: 'serial',
+            title: '序列',
             dataIndex: 'serial',
             key: 'serial',
             width: '5%',
             align:'right'
         },
         {
-            title: 'Bundle Thread',
+            title: 'Bundle&Thread',
             dataIndex: 'bundleThread',
             key: 'bundleThread',
         },
