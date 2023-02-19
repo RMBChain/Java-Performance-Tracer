@@ -19,8 +19,8 @@ import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import com.minirmb.jpt.orm.entity.MethodStatistics;
-import com.minirmb.jpt.orm.entity.Metric;
+import com.minirmb.jpt.orm.entity.StatisticsEntity;
+import com.minirmb.jpt.orm.entity.MetricEntity;
 import com.minirmb.jpt.orm.repositorys.MetricMongoRepository;
 
 import javax.annotation.Resource;
@@ -36,24 +36,24 @@ public class MetricMongoService {
 	private MongoTemplate mongoTemplate;
 
 	public List<String> findHosts() {
-		return mongoTemplate.findDistinct(new Query(), "hostName",Metric.class,String.class);
+		return mongoTemplate.findDistinct(new Query(), "hostName", MetricEntity.class,String.class);
 	}
 
 	public List<String> findTraces(String hostName) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("hostName").is(hostName));
-		return mongoTemplate.findDistinct(query, "tracerId",Metric.class,String.class);
+		return mongoTemplate.findDistinct(query, "tracerId", MetricEntity.class,String.class);
 	}
 
-	public List<Metric> findUnMergedOutRow(int count) {
+	public List<MetricEntity> findUnMergedOutRow(int count) {
 		Criteria criteria = Criteria.where("merged").is(false);
 		criteria = criteria.and("inOrOut").is(TracerFlag.MethodOut);
 		Query query = new Query();
 		query.addCriteria(criteria).limit(count);
-		return mongoTemplate.find( query, Metric.class);
+		return mongoTemplate.find( query, MetricEntity.class);
 	}
 
-	public void setMergedInfo(Metric snapshotRow) {
+	public void setMergedInfo(MetricEntity snapshotRow) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("_id").is(snapshotRow.getId()));
 		Update update = new Update();
@@ -61,17 +61,17 @@ public class MetricMongoService {
 		update.set("inTime", snapshotRow.getInTime());
 		update.set("outTime", snapshotRow.getOutTime());
 		update.set("usedTime", snapshotRow.getUsedTime());
-		mongoTemplate.updateFirst(query, update, Metric.class);
+		mongoTemplate.updateFirst(query, update, MetricEntity.class);
 	}
 
 	public void delete(String id) {
 		Query query = new Query();
 		query.addCriteria(Criteria.where("_id").is(id));
-		mongoTemplate.remove(query, Metric.class);
+		mongoTemplate.remove(query, MetricEntity.class);
 	}
 
-	public List<Metric> findRootSnapshotRow(String tracerId) {
-		Metric row = new Metric();
+	public List<MetricEntity> findRootSnapshotRow(String tracerId) {
+		MetricEntity row = new MetricEntity();
 		row.setTracerId(tracerId);
 		row.setHierarchy(1);
 		row.setInOrOut("in");
@@ -79,8 +79,8 @@ public class MetricMongoService {
 		return metricMongoRepository.findAll(Example.of(row), sort);
 	}
 
-	public List<Metric> findSnapshotRowByParent(String tracerId, Long threadId, Long serial) {
-		Metric row = new Metric();
+	public List<MetricEntity> findSnapshotRowByParent(String tracerId, Long threadId, Long serial) {
+		MetricEntity row = new MetricEntity();
 		row.setTracerId(tracerId);
 		row.setThreadId(threadId);
 		row.setParentId(serial);
@@ -89,8 +89,8 @@ public class MetricMongoService {
 		return metricMongoRepository.findAll(Example.of(row), sort);
 	}
 
-	public Metric findInByOut(Metric outRow) {
-		Metric row = new Metric();
+	public MetricEntity findInByOut(MetricEntity outRow) {
+		MetricEntity row = new MetricEntity();
 		row.setTracerId(outRow.getTracerId());
 		row.setBundleId(outRow.getBundleId());
 		row.setThreadId(outRow.getThreadId());
@@ -98,38 +98,38 @@ public class MetricMongoService {
 		row.setInOrOut(TracerFlag.MethodIn);
 
 		Query query = new Query(Criteria.byExample(row));
-		return mongoTemplate.findOne( query, Metric.class);
+		return mongoTemplate.findOne( query, MetricEntity.class);
 	}
 
-	public List<MethodStatistics> findByTracerId(String tracerId) {
+	public List<StatisticsEntity> statistics(String tracerId) {
 		Criteria criteria = Criteria.where("merged").is(true);
 		criteria = criteria.and("inOrOut").is("in");
 		criteria = criteria.and("tracerId").is(tracerId);
 		MatchOperation mo = Aggregation.match(criteria);
 
-		GroupOperation gp = Aggregation.group("tracerId", "packageName", "className", "methodName");
+		GroupOperation gp = Aggregation.group("tracerId", "className", "methodName");
 		gp = gp.count().as("invokedCount");
 		gp = gp.min("inTime").as("firstInvokeTime");
 		gp = gp.max("outTime").as("lastInvokeTime");
 		gp = gp.sum("usedTime").as("usedTime");
 		
 		Aggregation agg = Aggregation.newAggregation(mo, gp, Aggregation.sort(Sort.Direction.DESC, "usedTime"));
-		AggregationResults<MethodStatistics> results = mongoTemplate.aggregate(agg, "snapshotRow",
-				MethodStatistics.class);
+		AggregationResults<StatisticsEntity> results = mongoTemplate.aggregate(agg, MetricEntity.class.getSimpleName(),
+				StatisticsEntity.class);
 
 		return results.getMappedResults();
 	}
 
 	@Async
-	public void  saveAll(List<Metric> snapshotRows) {
+	public void  saveAll(List<MetricEntity> snapshotRows) {
 		metricMongoRepository.saveAll(snapshotRows);
 	}
 
-	public void save(Metric snapshotRow) {
+	public void save(MetricEntity snapshotRow) {
 		metricMongoRepository.save(snapshotRow);
 	}
 
 	public void clearAllData() {
-		mongoTemplate.dropCollection(Metric.class);
+		mongoTemplate.dropCollection(MetricEntity.class);
 	}
 }

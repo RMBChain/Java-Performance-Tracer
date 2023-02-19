@@ -8,7 +8,7 @@ public class ReceivedDataEvent extends ApplicationEvent {
         return lastedTime;
     }
 
-    public ReceivedDataEvent(byte[] data) {
+    public ReceivedDataEvent(String data) {
         super(data);
         lastedTime = System.currentTimeMillis();
     }

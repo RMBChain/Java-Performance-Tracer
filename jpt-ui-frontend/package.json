@@ -2,16 +2,24 @@
   "name": "antd-demo",
   "version": "0.1.0",
   "private": true,
-  "proxy":"http://localhost:8899",
+  "proxy": "http://localhost:8899/",
+  "options": {
+    "allowedHosts": ["localhost", ".localhost"],
+    "proxy": "http://localhost:8899/"
+  },
   "dependencies": {
+    "@ant-design/charts": "^1.4.2",
     "@ant-design/icons": "^4.8.0",
+    "@ant-design/plots": "^1.2.3",
     "@testing-library/jest-dom": "^5.14.1",
     "@testing-library/react": "^13.0.0",
     "@testing-library/user-event": "^13.2.1",
     "antd": "^5.1.2",
     "axios": "^1.2.2",
+    "nanoid": "^4.0.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "react-infinite-scroll-component": "^6.1.0",
     "react-scripts": "5.0.1",
     "web-vitals": "^2.1.0"
   },

@@ -1,6 +1,6 @@
 package com.minirmb.jpt.receiver;
 
-import com.minirmb.jpt.orm.entity.Metric;
+import com.minirmb.jpt.orm.entity.MetricEntity;
 import com.minirmb.jpt.orm.services.MetricMongoService;
 
 import lombok.extern.slf4j.Slf4j;
@@ -31,7 +31,7 @@ public class MergeTask {
 
 	@Scheduled(cron = "0/5 * * * * ?")
 	public void merge() {
-		List<Metric> unMergedOutRow = metricMongoService.findUnMergedOutRow(100);
+		List<MetricEntity> unMergedOutRow = metricMongoService.findUnMergedOutRow(100);
 		while(!unMergedOutRow.isEmpty()) {
 			count.addAndGet(unMergedOutRow.size());
 			log.info("Found unmerged row count : " + unMergedOutRow.size() + ", merged count : " + count);
@@ -41,11 +41,13 @@ public class MergeTask {
 			});
 			unMergedOutRow = metricMongoService.findUnMergedOutRow(100);
 		}
-		log.info("Merged count : " + count.get());
+		if(!unMergedOutRow.isEmpty()){
+			log.info("Merged count : " + count.get());
+		}
 	}
 
-	private void merge(Metric outRow) {
-		Metric inRow = metricMongoService.findInByOut(outRow);
+	private void merge(MetricEntity outRow) {
+		MetricEntity inRow = metricMongoService.findInByOut(outRow);
 
 		if (null != inRow ) {
 			// merger same row

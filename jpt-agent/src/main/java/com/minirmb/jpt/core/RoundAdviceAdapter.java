@@ -20,7 +20,7 @@ public class RoundAdviceAdapter extends AdviceAdapter {
 		this.methodName = methodName;
 		this.descriptor = descriptor;
 		this.methodSign = className.replace("/", ".") + "." + methodName + descriptor;
-		this.metricClassName = "com/minirmb/jpt/core/collect/Collector";
+		this.metricClassName = "com/minirmb/jpt/collect/Collector";
 		this.tracerId = tracerId;
 	}
 
@@ -31,7 +31,6 @@ public class RoundAdviceAdapter extends AdviceAdapter {
 
 	@Override
 	public void onMethodEnter() {
-		JPTLogger.log(className, methodName, descriptor);
 		mv.visitLdcInsn(tracerId);
 		mv.visitLdcInsn(className);
 		mv.visitLdcInsn(methodName + descriptor);
@@ -43,13 +42,11 @@ public class RoundAdviceAdapter extends AdviceAdapter {
 	@Override
 	public void onMethodExit(int opcode) {
 		if (opcode != ATHROW) {
-			JPTLogger.log(methodSign, ", opcode:" + opcode);
 			onFinally(opcode);
 		}
 	}
 
 	private void onFinally(int opcode) {
-		JPTLogger.log(methodSign, ", opcode:" + opcode);
 		mv.visitLdcInsn(tracerId);
 		mv.visitLdcInsn(className);
 		mv.visitLdcInsn(methodName + descriptor);
@@ -60,7 +57,6 @@ public class RoundAdviceAdapter extends AdviceAdapter {
 
 	@Override
 	public void visitMaxs(int maxStack, int maxLocals) {
-		JPTLogger.log(methodSign, "    visitMaxs:", " maxStack:" + maxStack, ",  maxLocals:" + maxLocals);
 		Label endFinally = new Label();
 		mv.visitTryCatchBlock(startFinally, endFinally, endFinally, null);
 		mv.visitLabel(endFinally);

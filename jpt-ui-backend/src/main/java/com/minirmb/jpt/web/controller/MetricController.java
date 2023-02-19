@@ -3,11 +3,11 @@ package com.minirmb.jpt.web.controller;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
-import com.minirmb.jpt.orm.entity.InjectConfig;
-import com.minirmb.jpt.orm.entity.MethodStatistics;
-import com.minirmb.jpt.orm.entity.Metric;
-import com.minirmb.jpt.orm.services.InjectConfigMongoService;
+import com.minirmb.jpt.orm.entity.StatisticsEntity;
+import com.minirmb.jpt.orm.entity.MetricEntity;
+import com.minirmb.jpt.orm.entity.TracerEntity;
 import com.minirmb.jpt.orm.services.MetricMongoService;
+import com.minirmb.jpt.orm.services.TracerService;
 import com.minirmb.jpt.web.vo.KeyValue;
 import org.springframework.beans.BeanUtils;
 import org.springframework.web.bind.annotation.*;
@@ -18,17 +18,18 @@ import com.minirmb.jpt.web.vo.MetricTreeVO;
 import javax.annotation.Resource;
 
 @RestController
+@RequestMapping("/metric")
 public class MetricController {
 	@Resource
 	private MetricMongoService metricMongoService;
 
 	@Resource
-	private InjectConfigMongoService injectConfigMongoService;
+	private TracerService tracerService;
 
-	@RequestMapping(value = "/listHost")
+	@RequestMapping(value = "/findHost")
 	@ResponseBody
-	public List<KeyValue> listHost() {
-		List<String> traceList = metricMongoService.findHosts();
+	public List<KeyValue> findHost() {
+		List<String> traceList = tracerService.findHosts();
 		Collections.sort(traceList);
 		List<KeyValue> result = new ArrayList<>();
 		for( String m: traceList ){
@@ -37,15 +38,10 @@ public class MetricController {
 		return result;
 	}
 
-	@RequestMapping(value = "/listTracers")
+	@RequestMapping(value = "/findTracers")
 	@ResponseBody
-	public List<KeyValue> listTracers(String hostName) {
-		List<String> traceList = metricMongoService.findTraces(hostName);
-		Collections.sort(traceList);
-		List<KeyValue> result = new ArrayList<>();
-		for( String m: traceList ){
-			result.add(new KeyValue(m,m));
-		}
+	public List<TracerEntity> findTracers(String hostName) {
+		List<TracerEntity> result = tracerService.findTraces(hostName);
 		return result;
 	}
 
@@ -53,7 +49,7 @@ public class MetricController {
 	public List<MetricTreeVO> listMetrics(@RequestParam(name = "tracerId") String tracerId,
 												  @RequestParam(name = "threadId", required = false) Long threadId,
 												  @RequestParam(name = "serial", required = false) Long serial) {
-		List<Metric> result;
+		List<MetricEntity> result;
 		if (Objects.isNull( threadId ) || Objects.isNull(serial)) {
 			result = metricMongoService.findRootSnapshotRow(tracerId);
 		} else {
@@ -62,16 +58,16 @@ public class MetricController {
 		return convertToSnapshotRowTreeVO(result);
 	}
 
-	@RequestMapping(value = "/listStatistics")
-	public List<MethodStatisticsVO> listStatistics(@RequestParam(name = "tracerId") String tracerId) {
-		List<MethodStatistics> aa =  metricMongoService.findByTracerId(tracerId);
+	@RequestMapping(value = "/statistics")
+	public List<MethodStatisticsVO> statistics(@RequestParam(name = "tracerId") String tracerId) {
+		List<StatisticsEntity> aa =  metricMongoService.statistics(tracerId);
 		return convertToMethodStatisticsVO(aa);
 	}
 
-	private List<MethodStatisticsVO> convertToMethodStatisticsVO(List<MethodStatistics> msEntities){
+	private List<MethodStatisticsVO> convertToMethodStatisticsVO(List<StatisticsEntity> msEntities){
 		List<MethodStatisticsVO> result = new ArrayList<>();
-		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MMdd HH:mm:ss SSS");
-		for(MethodStatistics ms : msEntities) {
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd HH:mm:ss SSS");
+		for(StatisticsEntity ms : msEntities) {
 			MethodStatisticsVO vo = new MethodStatisticsVO();
 			BeanUtils.copyProperties(ms, vo);
 			if(null != ms.getFirstInvokeTime()) {
@@ -85,32 +81,21 @@ public class MetricController {
 		return result;
 	}
 
-	private List<MetricTreeVO> convertToSnapshotRowTreeVO(List<Metric> metrics) {
+	private List<MetricTreeVO> convertToSnapshotRowTreeVO(List<MetricEntity> metricEntities) {
 		List<MetricTreeVO> result = new ArrayList<>();
-		for (Metric metric : metrics) {
+		for (MetricEntity metricEntity : metricEntities) {
 			MetricTreeVO vo = new MetricTreeVO();
-			BeanUtils.copyProperties(metric, vo);
+			BeanUtils.copyProperties(metricEntity, vo);
 			vo.setChildren(new ArrayList<>());
 			vo.setState("closed");
-			vo.setHierarchy(metric.getHierarchy());
-			vo.setQualifiedClassName(metric.getPackageName() + "." + metric.getClassName());
+			vo.setHierarchy(metricEntity.getHierarchy());
+			vo.setQualifiedClassName(metricEntity.getPackageName() + "." + metricEntity.getClassName());
 			vo.setQualifiedMethodName(
-					metric.getPackageName() + "." + metric.getClassName() + "." + metric.getMethodName());
-			vo.setClassAndMethodName(metric.getClassName() + "." + metric.getMethodName());
+					metricEntity.getPackageName() + "." + metricEntity.getClassName() + "." + metricEntity.getMethodName());
+			vo.setClassAndMethodName(metricEntity.getClassName() + "." + metricEntity.getMethodName());
 			result.add(vo);
 		}
 		return result;
-	}
-
-	@RequestMapping(value = "/getInjectConfig")
-	public InjectConfig getInjectConfig() {
-		return injectConfigMongoService.getInjectConfig();
-	}
-
-	@PostMapping(value = "/saveInjectConfig")
-	@ResponseBody
-	public InjectConfig saveInjectConfig( @RequestBody InjectConfig ic) {
-		return injectConfigMongoService.saveInjectConfig( ic );
 	}
 
 	@RequestMapping(value = "/clearAllData")

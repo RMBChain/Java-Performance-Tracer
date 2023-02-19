@@ -2,7 +2,7 @@
 	<parent>
 		<groupId>com.minirmb</groupId>
 		<artifactId>Java-Performance-Tracer</artifactId>
-		<version>0.0.1</version>
+		<version>0.2</version>
 	</parent>
 	<modelVersion>4.0.0</modelVersion>
 	<artifactId>jpt-agent</artifactId>
@@ -18,6 +18,11 @@
 			<groupId>org.ow2.asm</groupId>
 			<artifactId>asm-commons</artifactId>
 			<version>9.4</version>
+		</dependency>
+		<dependency>
+			<groupId>com.minirmb</groupId>
+			<artifactId>jpt-common</artifactId>
+			<version>0.2</version>
 		</dependency>
 	</dependencies>
 	<build>

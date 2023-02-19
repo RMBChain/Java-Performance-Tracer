@@ -11,15 +11,15 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.minirmb</groupId>
 	<artifactId>Java-Performance-Tracer</artifactId>
-	<version>0.0.1</version>
+	<version>0.2</version>
 	<packaging>pom</packaging>
 
 	<modules>
 		<module>jpt-agent</module>
-		<module>jpt-transmitter</module>
+		<module>jpt-collector</module>
+		<module>jpt-common</module>
 		<module>jpt-tester</module>
 		<module>jpt-ui-backend</module>
-		<module>jpt-common</module>
 	</modules>
 
 	<properties>

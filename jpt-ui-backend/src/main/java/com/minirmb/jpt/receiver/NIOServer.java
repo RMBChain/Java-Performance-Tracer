@@ -1,8 +1,10 @@
 package com.minirmb.jpt.receiver;
 
+import com.minirmb.jpt.common.AnalysisRangeItem;
+import com.minirmb.jpt.common.ClientConfig;
 import com.minirmb.jpt.common.TracerFlag;
-import com.minirmb.jpt.orm.entity.InjectConfig;
-import com.minirmb.jpt.orm.services.InjectConfigMongoService;
+import com.minirmb.jpt.orm.entity.AnalysisRangeEntity;
+import com.minirmb.jpt.orm.services.AnalysisRangeMongoService;
 import com.minirmb.jpt.web.event.ReceivedDataEvent;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationEventPublisher;
@@ -18,10 +20,8 @@ import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.ServerSocketChannel;
 import java.nio.channels.SocketChannel;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 @Component
 @EnableAsync
@@ -29,16 +29,16 @@ import java.util.Set;
 public class NIOServer {
 
 	@Resource
-	private ApplicationEventPublisher applicationEventPublisher;
+	private ApplicationEventPublisher eventPublisher;
 
 	@Resource
-	private InjectConfigMongoService injectConfigMongoService;
+	private AnalysisRangeMongoService analysisRangeMongoService;
 
-	public int socketChannelId = 100001;
+	public AtomicInteger socketChannelId =  new AtomicInteger(100001);
 
 	@Async
 	public void start() {
-		int serverPort = getPort();
+		int serverPort = ClientConfig.GetServerPort();
 		log.info(NIOServer.class.getName() + " starting...  Using port:" + serverPort);
 		try {
 			// 创建通道和选择器
@@ -48,7 +48,7 @@ public class NIOServer {
 			socketChannel.socket().bind(inetSocketAddress);
 			// 设置通道非阻塞 绑定选择器
 			socketChannel.configureBlocking(false);
-			socketChannel.register(serverSocketChannelSelector, SelectionKey.OP_ACCEPT).attach(socketChannelId++);
+			socketChannel.register(serverSocketChannelSelector, SelectionKey.OP_ACCEPT).attach(socketChannelId.addAndGet(1));
 			log.info(NIOServer.class.getName() + " started .... port:" + serverPort);
 			listener(serverSocketChannelSelector);
 		} catch (IOException e) {
@@ -80,11 +80,6 @@ public class NIOServer {
 		}
 	}
 
-	private int getPort() {
-		Map<String, String> env = System.getenv();
-		return Integer.parseInt(env.getOrDefault("jds_client_receiver_port", "8877"));
-	}
-
 	private void handleRead(SelectionKey selectionKey) throws IOException {
 		SocketChannel socketChannel = (SocketChannel) selectionKey.channel();
 		ByteBuffer byteBuffer = ByteBuffer.allocate(1024 * 1024);
@@ -105,13 +100,12 @@ public class NIOServer {
 			}
 			if (read > 0) {
 				count += read;
-				byte[] receivedByte = Arrays.copyOf(byteBuffer.array(), read);
-				String data = new String(receivedByte); // TODO: 需要被优化
-				if( data.startsWith(TracerFlag.MeasureDataPrefix)){ // TODO: 需要被优化
-					applicationEventPublisher.publishEvent( new ReceivedDataEvent(receivedByte));
-				}else if( data.startsWith(TracerFlag.InjectConfigPrefix )){
-					socketChannel.write(ByteBuffer.wrap(getInjectConfig()));
-					log.debug("Client get inject config : " + new String(getInjectConfig()));
+				String receivedData = new String(byteBuffer.array());
+				if( receivedData.startsWith(TracerFlag.GetAnalysisRangePrefix)){
+					socketChannel.write(ByteBuffer.wrap(getAnalysisRange()));
+					log.debug("Client get Analysis Range : " + new String(getAnalysisRange()));
+				}else{
+					eventPublisher.publishEvent( new ReceivedDataEvent(receivedData));
 				}
 			} else if (read == -1) {//the connection is unavaliabled
 				shouldCloseSocketChannel = true;
@@ -146,27 +140,37 @@ public class NIOServer {
 		SocketChannel socketChannel = serverSocketChannel.accept();
 		socketChannel.configureBlocking(false);
 		SelectionKey key = socketChannel.register(selectionKey.selector(), SelectionKey.OP_READ);
-		key.attach(socketChannelId++);
+		key.attach( socketChannelId.addAndGet(1));
 		log.info("socketChannelId : " + selectionKey.attachment() + " accepted. Remote: "
 				+ socketChannel.getRemoteAddress());
 	}
 
-	private byte[] getInjectConfig(){
+	private byte[] getAnalysisRange(){
 		StringBuilder result = new StringBuilder();
-		InjectConfig ic = injectConfigMongoService.getInjectConfig();
-		String[] exclude = ic.getExclude().split("\n");
-		for(String ex : exclude){
-			result.append("exclude=");
-			result.append( ex );
-			result.append( "\n");
+		AnalysisRangeEntity ic = analysisRangeMongoService.getAnalysisRange();
+
+		List<AnalysisRangeItem> exclude = ic.getExclude();
+		if( null != exclude ){
+			for(AnalysisRangeItem ari : exclude){
+				if( ari.getEnabled()){
+					result.append("exclude::");
+					result.append( ari.toStringBuilder() );
+					result.append( "\n");
+				}
+			}
 		}
 
-		String[] include = ic.getInclude().split("\n");
-		for(String ex : include){
-			result.append("include=");
-			result.append( ex );
-			result.append( "\n");
+		List<AnalysisRangeItem> include = ic.getInclude();
+		if( null != include){
+			for(AnalysisRangeItem ari : include){
+				if( ari.getEnabled()) {
+					result.append("include::");
+					result.append(ari.toStringBuilder());
+					result.append("\n");
+				}
+			}
 		}
+
 		return result.toString().getBytes();
 	}
 }

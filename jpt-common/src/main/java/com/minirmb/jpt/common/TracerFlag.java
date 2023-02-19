@@ -6,5 +6,7 @@ public interface TracerFlag {
 	String ItemSplitter = ",";
 	String LineBreaker = "\n";
 	String MeasureDataPrefix = "++MeasureData ";
-	String InjectConfigPrefix = "++InjectConfig ";
+	String GetAnalysisRangePrefix = "++GetAnalysisRange ";
+	String HeartBeat = "++HeartBeat ";
+	String AnalysisLog = "++AnalysisLog ";
 }

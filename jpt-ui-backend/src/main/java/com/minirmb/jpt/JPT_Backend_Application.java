@@ -1,6 +1,6 @@
 package com.minirmb.jpt;
 
-import com.minirmb.jpt.orm.services.InjectConfigMongoService;
+import com.minirmb.jpt.orm.services.AnalysisRangeMongoService;
 import com.minirmb.jpt.receiver.NIOServer;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -24,7 +24,7 @@ public class JPT_Backend_Application {
     private NIOServer server;
 
     @Resource
-    private InjectConfigMongoService injectConfigMongoService;
+    private AnalysisRangeMongoService analysisRangeMongoService;
 
     @PreDestroy
     public void preDestroy() throws Exception {
@@ -32,7 +32,7 @@ public class JPT_Backend_Application {
 
     @PostConstruct
     public void postConstruct() throws Exception {
-        injectConfigMongoService.initOnStartup();
+        analysisRangeMongoService.initOnStartup();
         server.start();
     }
 

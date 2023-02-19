@@ -10,36 +10,27 @@ import static com.minirmb.jpt.common.TracerFlag.*;
  * 这个类的field不要赋初始值
  */
 public class MetricBase implements IData{
-    private String hostName;
-    private String ip;
+    private String id; // = tracerId + "_" + threadId + "_" + serial
     private String tracerId;
     private String bundleId; // 标注每个 OSGI 的 bundle。
     private Long threadId;//当前线程id
     private Integer hierarchy;//当前被调用的方法所在的层级。in 和 out 是相同的。
-    private Long serial; // logEnter和logExit被调用的次数。
+    private Long serial; // logEnter和logExit被调用的序列数。
 
     private Long parentId;//调用 当前方法 的 方法id
-    private Long methodId;
+    private Long methodId; // 一次调用的in和out的methodId是相同的。
     private String inOrOut; // true-方法开始，false-方法结束。
     private String className;
     private String methodName;
     private Long inTime; // isMethodIn==true时，表示方法开始的时间，否则表示方法结束的时间。
     private Long outTime; // isMethodIn==true时，表示方法开始的时间，否则表示方法结束的时间。
 
-    public String getHostName() {
-        return hostName;
+    public String getId() {
+        return id;
     }
 
-    public void setHostName(String hostName) {
-        this.hostName = hostName;
-    }
-
-    public String getIp() {
-        return ip;
-    }
-
-    public void setIp(String ip) {
-        this.ip = ip;
+    public void setId(String id) {
+        this.id = id;
     }
 
     public String getTracerId() {
@@ -138,37 +129,23 @@ public class MetricBase implements IData{
     }
 
     public byte[] toBytes(){
-        //MetricId, threadId,hierarchy,enter or exit,serial,className,methodName,time,methodId,parentId
+        //id, MetricId, threadId,hierarchy,enter or exit,serial,className,methodName,time,methodId,parentId
         StringBuilder builder = new StringBuilder();
         builder.append( MeasureDataPrefix );
-        builder.append( hostName );
-        builder.append( ItemSplitter);
-        builder.append( ip );
-        builder.append( ItemSplitter);
-        builder.append( tracerId );
-        builder.append( ItemSplitter);
-        builder.append( bundleId );
-        builder.append( ItemSplitter);
-        builder.append( String.format("%4d",  threadId ));
-        builder.append( ItemSplitter);
-        builder.append( String.format("%4d",  hierarchy ));
-        builder.append( ItemSplitter);
-        builder.append( String.format("%6d",  serial ));
-        builder.append( ItemSplitter);
-        builder.append( inOrOut );
-        builder.append( ItemSplitter);
-        builder.append( String.format("%" + (hierarchy * 2) + "s",  " " ) );
-        builder.append( className);
-        builder.append( ItemSplitter);
-        builder.append( methodName);
-        builder.append( ItemSplitter);
-        builder.append( inTime );
-        builder.append( ItemSplitter);
-        builder.append( outTime );
-        builder.append( ItemSplitter);
-        builder.append( methodId );
-        builder.append( ItemSplitter);
-        builder.append( parentId);
+        builder.append( ItemSplitter).append( id );
+//        builder.append( ItemSplitter).append( hostName );
+        builder.append( ItemSplitter).append( tracerId );
+        builder.append( ItemSplitter).append( bundleId );
+        builder.append( ItemSplitter).append( String.format("%4d",  threadId ));
+        builder.append( ItemSplitter).append( String.format("%4d",  hierarchy ));
+        builder.append( ItemSplitter).append( String.format("%6d",  serial ));
+        builder.append( ItemSplitter).append( inOrOut );
+        builder.append( ItemSplitter).append( String.format("%" + (hierarchy * 2) + "s",  " " )).append( className);
+        builder.append( ItemSplitter).append( methodName);
+        builder.append( ItemSplitter).append( inTime );
+        builder.append( ItemSplitter).append( outTime );
+        builder.append( ItemSplitter).append( methodId );
+        builder.append( ItemSplitter).append( parentId);
         builder.append( LineBreaker );
         return builder.toString().getBytes();
     }
@@ -179,10 +156,9 @@ public class MetricBase implements IData{
         if( data.trim().length() > 0 ) {
             metric = new MetricBase();
             String[] items = data.split(TracerFlag.ItemSplitter);
-            //host name
-            metric.setHostName(items[0].substring(TracerFlag.MeasureDataPrefix.length()));
-            //ip
-            metric.setIp(items[1].trim());
+            // id
+            String id = items[1].trim();
+            metric.setId( id );
             //tracerId
             metric.setTracerId(items[2].trim());
             //bundleId

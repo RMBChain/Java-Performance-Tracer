@@ -2,12 +2,19 @@ package com.minirmb.jpt.core;
 
 import java.lang.instrument.ClassFileTransformer;
 import java.lang.instrument.Instrumentation;
+import java.net.InetAddress;
 import java.security.ProtectionDomain;
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.Map;
+import java.util.Timer;
+import java.util.TimerTask;
 import java.util.UUID;
+import java.util.stream.Stream;
 
+import com.minirmb.jpt.common.AnalysisRange;
+import com.minirmb.jpt.common.HeartBeat;
+import com.minirmb.jpt.tools.JPTLogger;
+import com.minirmb.jpt.tools.Transmitter;
 import org.objectweb.asm.ClassReader;
 import org.objectweb.asm.ClassWriter;
 
@@ -17,8 +24,9 @@ import org.objectweb.asm.ClassWriter;
  */
 public class TransformEntry implements ClassFileTransformer {
 
-	private InjectConfig injectConfig;
+	private AnalysisRange analysisRange;
 	private String tracerId;
+	private String[] systemPackages= new String[]{"java/","jdk/","sun/","javax/"};
 
 	/**
 	 * Agent Entry
@@ -27,8 +35,7 @@ public class TransformEntry implements ClassFileTransformer {
 	 * @param inst      Instrumentation
 	 */
 	public static void premain(String agentArgs, Instrumentation inst) {
-		System.out.println(TransformEntry.class.getName() + ".premain() args : " + agentArgs + "\n");
-		JPTLogger.log(TransformEntry.class.getName() + ".premain() args : " + agentArgs + "\n");
+		JPTLogger.log(TransformEntry.class.getName() + ".premain() args : " + agentArgs );
 
 		try {
 			/*
@@ -36,19 +43,25 @@ public class TransformEntry implements ClassFileTransformer {
 			 * in order to transform class files.
 			 */
 			TransformEntry trans = new TransformEntry();
-			{ // Inject Config
-				Map<String, String> env = System.getenv();
-				String server = env.getOrDefault("jpt_nio_server_ip", "localhost");
-				int port = Integer.parseInt(env.getOrDefault("jpt_nio_server_port", "8877"));
-				trans.injectConfig = InjectConfig.GetInjectConfig(server, port);
-			}
+			trans.analysisRange = AnalysisRangeHelper.GetAnalysisRange();
 			trans.tracerId = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date()) + "-"
 					+ UUID.randomUUID().toString().substring(0, 8);
 
 			/* Registers the supplied transformer. */
 			inst.addTransformer(trans);
 
-			JPTLogger.log("load adviser ok.", TransformEntry.class.getName(), ".premain() was called. args:",
+			// Setup HeartBeat
+			InetAddress address = InetAddress.getLocalHost();
+			String hostName = address.getHostName();
+			String ip = address.getHostAddress();
+			new Timer(true).schedule(new TimerTask() {
+				public void run() {
+					HeartBeat heartBeat = new HeartBeat(trans.tracerId, System.currentTimeMillis(), hostName, ip);
+					Transmitter.sendData(heartBeat);
+				}
+			}, 1000, 1000);
+
+			JPTLogger.log("premain exec success.", TransformEntry.class.getName(), ".premain() was called. args:",
 					agentArgs);
 
 		} catch (Exception e) {
@@ -62,20 +75,21 @@ public class TransformEntry implements ClassFileTransformer {
 		}
 	}
 
+	@Override
 	public byte[] transform(ClassLoader loader, String className, Class<?> classBeingRedefined,
 			ProtectionDomain protectionDomain, byte[] classfileBuffer) {
 		byte[] transformed = null;
-		if (injectConfig.shouldInject(className)) {
+		boolean isSystemPackage = Stream.of(systemPackages).parallel().anyMatch( sp -> className.startsWith(sp));
+		if ( !isSystemPackage && this.analysisRange.isInIncludeRange(className)) {
 			try {
 				ClassReader cr = new ClassReader(classfileBuffer);
 				ClassWriter cw = new ClassWriter(ClassWriter.COMPUTE_FRAMES);
-				ClassAdapter ca = new ClassAdapter(tracerId, cw);
+				ClassAdapter ca = new ClassAdapter(tracerId, cw, analysisRange);
 				cr.accept(ca, ClassReader.EXPAND_FRAMES);
 				transformed = cw.toByteArray();
-				JPTLogger.log("advised class ok:", className, ", ClassLoader:", String.valueOf(loader) + "\n");
 			} catch (RuntimeException re) {
 				re.printStackTrace();
-				JPTLogger.log("advised class failed:", className, ", ClassLoader:", String.valueOf(loader) + "\n");
+				JPTLogger.log("advised class failed:", className, ", ClassLoader:", String.valueOf(loader) );
 				JPTLogger.log(JPTLogger.ExceptionStackTraceToString(re));
 			}
 		}

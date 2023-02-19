@@ -13,10 +13,15 @@ spring:
 logging:
   level:
     root: INFO
-    org.springframework.web: trace
     com.minirmb.jpt: INFO
     com.minirmb.jpt.receiver: DEBUG
-#    org.springframework.data.mongodb.core: Trace
+    org:
+      springframework:
+        web: trace
+        data:
+          mongodb:
+            core: trace
+  #    org.springframework.data.mongodb.core: Trace
 
   file:
     max-size: 50MB

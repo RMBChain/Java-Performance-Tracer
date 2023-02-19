@@ -1,7 +1,6 @@
-FROM openjdk:8-jre
+FROM azul/zulu-openjdk:11.0.17-11.60.19
 MAINTAINER Spooner
 
-#
 # mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
 # rm -r config
 # rm -r lib
@@ -22,7 +21,6 @@ ARG JAR_FILE
 
 WORKDIR /home/
 
-ADD workspace ./workspace
 ADD target/$JAR_FILE  .
 ADD target/lib/ ./lib/
 ADD target/lib/jds-core-1.0.8-SNAPSHOT.jar .
