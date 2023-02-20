@@ -20,21 +20,13 @@ import java.util.List;
 @Slf4j
 public class TracerService {
 
+	private final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
 	@Resource
 	private TracerMongoRepository tracerMongoRepository;
 
 	@Resource
 	private MongoTemplate mongoTemplate;
-
-	public List<TracerEntity> findAll() {
-		List<TracerEntity> result = mongoTemplate.findAll(TracerEntity.class);
-		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		// time to string
-		result.stream().forEach( te -> te.setLastUpdateStr( formatter.format(new Date(te.getLastUpdate()))));
-		// live
-		result.stream().forEach( te -> te.setLive( ( System.currentTimeMillis() - te.getLastUpdate())/1000 < 10));
-		return result;
-	}
 
 	public void save(TracerEntity tracerEntity) {
 		tracerMongoRepository.save(tracerEntity);
@@ -59,11 +51,10 @@ public class TracerService {
 		query.with(Sort.by( Sort.Direction.DESC,"tracerId"));
 
 		List<TracerEntity> result = mongoTemplate.find(query,TracerEntity.class);
-		final SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// time to string
-		result.stream().forEach( te -> te.setLastUpdateStr( formatter.format(new Date(te.getLastUpdate()))));
+		result.forEach( te -> te.setLastUpdateStr( formatter.format(new Date(te.getLastUpdate()))));
 		// live
-		result.stream().forEach( te -> te.setLive( ( System.currentTimeMillis() - te.getLastUpdate())/1000 < 10));
+		result.forEach( te -> te.setLive( ( System.currentTimeMillis() - te.getLastUpdate())/1000 < 10));
 		return result;
 	}
 }

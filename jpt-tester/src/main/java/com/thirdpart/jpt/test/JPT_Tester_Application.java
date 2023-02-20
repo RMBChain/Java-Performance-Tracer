@@ -11,11 +11,11 @@ public class JPT_Tester_Application {
         System.out.println("Begin............. " + JPT_Tester_Application.class);
         TestEntry te = new TestEntry();
         te.sayHello0("");
-
+        
         for (int i = 0; i < 5; i++) {
             te.sayHello1();
         }
-
+        Thread.sleep(5000);
         {
             List<Thread> threads = new ArrayList<>();
             for (int i = 0; i < 3; i++) {
@@ -33,7 +33,7 @@ public class JPT_Tester_Application {
 
         te.sayHello4();
 
-        Thread.sleep(10000);
+        Thread.sleep(5000);
 
         System.out.println("JPT_ClientDemo_Application Over!!!!!!");
         System.out.println("End " + JPT_Tester_Application.class);

@@ -35,16 +35,6 @@ public class MetricMongoService {
 	@Resource
 	private MongoTemplate mongoTemplate;
 
-	public List<String> findHosts() {
-		return mongoTemplate.findDistinct(new Query(), "hostName", MetricEntity.class,String.class);
-	}
-
-	public List<String> findTraces(String hostName) {
-		Query query = new Query();
-		query.addCriteria(Criteria.where("hostName").is(hostName));
-		return mongoTemplate.findDistinct(query, "tracerId", MetricEntity.class,String.class);
-	}
-
 	public List<MetricEntity> findUnMergedOutRow(int count) {
 		Criteria criteria = Criteria.where("merged").is(false);
 		criteria = criteria.and("inOrOut").is(TracerFlag.MethodOut);
@@ -123,10 +113,6 @@ public class MetricMongoService {
 	@Async
 	public void  saveAll(List<MetricEntity> snapshotRows) {
 		metricMongoRepository.saveAll(snapshotRows);
-	}
-
-	public void save(MetricEntity snapshotRow) {
-		metricMongoRepository.save(snapshotRow);
 	}
 
 	public void clearAllData() {

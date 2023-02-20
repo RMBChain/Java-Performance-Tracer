@@ -9,7 +9,6 @@
 >对代码没有侵入性,无需修改现有代码即可使用。
 
 
-
 ![avatar](pic/memo1.jpg)
 ![avatar](pic/memo2.jpg)
 ![avatar](pic/memo3.jpg)
@@ -59,8 +58,8 @@ yarn start
 open http://localhost:3000
 
 # run Tester Method 1 : in HOST
-java -javaagent:./lib/jpt-agent-0.2-jar-with-dependencies.jar \
-      -cp ./lib/jpt-collector-0.2-jar-with-dependencies.jar:./lib/jpt-tester-0.2.jar \
+java -javaagent:./lib/jpt-agent-0.2.jar \
+      -cp ./lib/jpt-collector-0.2.jar:./lib/jpt-tester-0.2.jar \
       com.thirdpart.jpt.test.JPT_Tester_Application
 
 open http://localhost:3000

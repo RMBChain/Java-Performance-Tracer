@@ -44,7 +44,6 @@ public class JPT_Backend_Application {
     }
 
     public static void main(String[] args) {
-        SpringApplication.run(JPT_Backend_Application.class,args);
         SpringApplication.run(JPT_Backend_Application.class, args);
     }
 }

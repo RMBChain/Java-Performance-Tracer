@@ -107,9 +107,9 @@ public class NIOServer {
 				}else{
 					eventPublisher.publishEvent( new ReceivedDataEvent(receivedData));
 				}
-			} else if (read == -1) {//the connection is unavaliabled
+			} else if (read == -1) {//the connection is unavailable
 				shouldCloseSocketChannel = true;
-				log.debug("Connection unavaliabled socketChannelId : " + selectionKey.attachment() + ", read count : " + read);
+				log.debug("Connection unavailable socketChannelId : " + selectionKey.attachment() + ", read count : " + read);
 			} else if (read == 0) {
 				shouldContinue = false;
 			} else {
