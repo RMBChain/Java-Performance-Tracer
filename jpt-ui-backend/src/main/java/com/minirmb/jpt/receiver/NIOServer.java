@@ -14,6 +14,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.Resource;
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.ByteBuffer;
 import java.nio.channels.SelectionKey;
@@ -44,7 +45,7 @@ public class NIOServer {
 			// 创建通道和选择器
 			ServerSocketChannel socketChannel = ServerSocketChannel.open();
 			Selector serverSocketChannelSelector = Selector.open();
-			InetSocketAddress inetSocketAddress = new InetSocketAddress(serverPort);
+			InetSocketAddress inetSocketAddress = new InetSocketAddress("0.0.0.0", serverPort );
 			socketChannel.socket().bind(inetSocketAddress);
 			// 设置通道非阻塞 绑定选择器
 			socketChannel.configureBlocking(false);

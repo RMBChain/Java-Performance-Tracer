@@ -1,4 +1,4 @@
-import {Button, Col, Divider, Form, List, message, Modal, Skeleton, Table, Tooltip} from 'antd';
+import {Button, Divider, Form, List, message, Modal, Skeleton, Table, Tooltip} from 'antd';
 import React, {useEffect, useState} from 'react';
 import {deleteTracer, saveTracer, findTracers, findLogs} from "../../api/jptAPI";
 import { FloatButton } from 'antd';
@@ -6,8 +6,6 @@ import {
     DeleteTwoTone, EditTwoTone, ReloadOutlined
 } from "@ant-design/icons";
 import Input from "antd/es/input/Input";
-import Row from "antd/es/descriptions/Row";
-import Avatar from "antd/es/avatar/avatar";
 import InfiniteScroll from 'react-infinite-scroll-component';
 
 const Management = () => {

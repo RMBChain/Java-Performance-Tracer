@@ -18,7 +18,7 @@ import com.minirmb.jpt.web.vo.MetricTreeVO;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/metric")
+@RequestMapping("/api/metric")
 public class MetricController {
 	@Resource
 	private MetricMongoService metricMongoService;

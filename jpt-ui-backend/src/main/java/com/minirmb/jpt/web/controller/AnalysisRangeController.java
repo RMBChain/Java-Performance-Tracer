@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.annotation.Resource;
 
 @RestController
-@RequestMapping("/analysisRange")
+@RequestMapping("/api/analysisRange")
 public class AnalysisRangeController {
 
 	@Resource

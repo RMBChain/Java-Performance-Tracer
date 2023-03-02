@@ -7,7 +7,7 @@ spring:
     mongodb:
       host: ${jpt_mongodb_host:127.0.0.1}
       port: ${jpt_mongodb_port:27017}
-      database: admin
+      database: jpt
       auto-index-creation: true
 
 logging:

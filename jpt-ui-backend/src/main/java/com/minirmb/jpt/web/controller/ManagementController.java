@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Objects;
 
 @RestController
-@RequestMapping("/management")
+@RequestMapping("/api/management")
 public class ManagementController {
 	@Resource
 	private MetricMongoService metricMongoService;

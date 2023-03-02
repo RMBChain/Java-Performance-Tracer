@@ -11,6 +11,6 @@ public class ClientConfig {
     }
 
     public static boolean ShouldLog(){
-        return "true".equalsIgnoreCase(System.getenv().getOrDefault("jpt_client_log", "false"));
+        return "true".equalsIgnoreCase(System.getenv().getOrDefault("jpt_client_log", "true"));
     }
 }

@@ -21,7 +21,7 @@ public class AnalysisRangeHelper {
 
 	public static AnalysisRange GetAnalysisRange( ) throws IOException {
 		ByteBuffer icBuffer = null;
-		JPTLogger.log("***** getAnalysisRange......");
+		JPTLogger.log("***** getAnalysisRange from : " + ClientConfig.GetServerIp() + ":" + ClientConfig.GetServerPort());
 		try (SocketChannel clientChannel = SocketChannel.open()) {
 			boolean connected = clientChannel.connect(new InetSocketAddress(ClientConfig.GetServerIp(), ClientConfig.GetServerPort()));
 			if (connected) {

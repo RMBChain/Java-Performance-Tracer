@@ -7,12 +7,15 @@ import { ReloadOutlined} from "@ant-design/icons";
 import "./metric.css"
 
 const Metric = () => {
-
     const [form] = Form.useForm();
     const [hostList, setHostList] = useState([]);
     const [tracerList, setTracerList] = useState([]);
     const [metricList, setMetricList] = useState([]);
     const [tableLoading, setTableLoading] = useState(false);
+
+    const backendUrl = process.env.REACT_APP_BACKEND_URL;
+    console.log( backendUrl ? backendUrl : 'http://localhost:8899' );
+    console.log( process.env.REACT_APP_BACKEND_URL);
 
     const onFinish = (values) => {
         console.log('Received values of form: ', values);
@@ -71,7 +74,7 @@ const Metric = () => {
 
     const refreshHosts = ()=>{
         listHosts().then( ( data ) => {
-            setHostList( data );
+            setHostList( data ? data : [] );
             let defaultHost = ( data.length > 0  ) ? data[0].text : "";
             form.setFieldValue("host", defaultHost);
             onHostChanged(defaultHost);

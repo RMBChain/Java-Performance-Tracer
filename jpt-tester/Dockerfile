@@ -1,33 +1,11 @@
-FROM azul/zulu-openjdk:11.0.17-11.60.19
+# docker build -t jpt-tester:v0.2 .
+# docker run -d -rm --name jpt-tester jpt-tester:v0.2
+
+FROM azul/zulu-openjdk:8u345
 MAINTAINER Spooner
-
-# mvn clean install -Dmaven.test.skip=true -Ddockerfile.skip=true
-# rm -r config
-# rm -r lib
-# docker cp config dda:/home/
-# docker cp entrypoint.sh dda:/home/
-# docker cp target/jds-client-demo-0.0.1.jar dda:/home/
-# docker cp target/lib/ dda:/home/
-# docker cp ../jds-client/target/jds-client-0.0.1.jar dda:/home/
-#
-# windows:
-#   set agentJar=C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client\target\jds-client-0.0.1.jar
-#   set configFolder=C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client-demo\config
-#   set jars=C:\_minirmb_\JavaDynamicSnapshot_workspace\jds\jds-client-demo\target\jds-client-demo-0.0.1.jar
-#   java -javaagent:%agentJar%=%configFolder% -cp %jars% com.thirdpart.jds.test.JDS_ClientDemo_Application
-# 
-
-ARG JAR_FILE
-
-WORKDIR /home/
-
-ADD target/$JAR_FILE  .
-ADD target/lib/ ./lib/
-ADD target/lib/jds-core-1.0.8-SNAPSHOT.jar .
-
-ADD entrypoint.sh .
-
-RUN sed -i "s/\r//" entrypoint.sh
-RUN chmod 777 entrypoint.sh
-
-ENTRYPOINT /home/entrypoint.sh
+COPY target/jpt-tester-0.2.jar    /jpt-tester-0.2.jar
+COPY target/jpt-agent-0.2.jar     /jpt-agent-0.2.jar
+COPY target/jpt-collector-0.2.jar /jpt-collector-0.2.jar
+COPY entrypoint.sh                /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+ENTRYPOINT ["/entrypoint.sh"]

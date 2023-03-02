@@ -160,9 +160,9 @@ const Setting = () => {
             ellipsis: true,
             align:'center',
             sorter: (a, b) => {
-                if( a.enabled == b.enabled ){
+                if( a.enabled === b.enabled ){
                     return 0;
-                }else if( a.enabled == true && b.enabled == false){
+                }else if( a.enabled === true && b.enabled === false){
                     return 1;
                 }else{
                     return -1;

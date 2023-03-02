@@ -1,0 +1,46 @@
+version: '3.1'
+
+services:
+  jpt-mongo:
+    image: mongo:4.2.3
+    ports:
+      - 27017:27017
+      - 28017:28017
+    networks:
+      - jpt-network
+
+  jpt-mongoclient:
+    image: mongoclient/mongoclient:4.0.1
+    depends_on:
+      - jpt-mongo
+    ports:
+      - 2000:3000
+    environment:
+      MONGO_URL: mongodb://jpt-mongo:27017
+    networks:
+      - jpt-network
+
+  jpt-backend:
+    image: jpt-ui-backend:v0.2
+    depends_on:
+      - jpt-mongo
+    ports:
+      - 8899:8899
+      - 8877:8877
+    environment:
+      jpt_mongodb_host : jpt-mongo
+      jpt_mongodb_port : 27017
+    networks:
+      - jpt-network
+
+  jpt-frontend:
+    image: jpt-ui-frontend:v0.2
+    ports:
+      - 3000:3000
+    environment:
+      REACT_APP_BACKEND_URL : http://jpt-backend:8899
+    networks:
+      - jpt-network
+
+networks:
+  jpt-network:
