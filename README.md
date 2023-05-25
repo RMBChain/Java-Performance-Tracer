@@ -1,12 +1,12 @@
 # Java Performance Tracer
 
->JPT是为云服务而生，适用于微服务性能分析。
+>JPT is designed for cloud services and is suitable for microservice performance analysis.
 
->WEB版的，易于使用。
+>WEB version, easy to use.
 
->能够记录被执行了的方法，这些方法执行了多长时间。并且可以看到方法的调用链路。
+>Be able to record the methods that were executed and how long they were executed. And you can see the call link of the method.
 
->对代码没有侵入性,无需修改现有代码即可使用。
+>It is non-invasive to the code and can be used without modifying existing code.
 
 
 ![avatar](tutorial/pic/memo1.jpg)
