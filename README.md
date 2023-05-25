@@ -19,8 +19,8 @@
 - Maven 
 - JDK8
 
-# 环境配置与运行
-- 1. [开发环境](tutorial/Env_DEV.md)
+# Configure Env and Run
+- 1. [Dev Env](tutorial/Env_DEV.md)
 - 2. [使用K8S运行](tutorial/Env_K8S.md)
 
  
